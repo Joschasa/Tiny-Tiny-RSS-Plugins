@@ -43,7 +43,6 @@ class af_XKCD extends Plugin {
 						// add text
 						$alt = $entry->getAttribute("alt");
 						$textnode = $doc->createTextNode( $alt );
-						var_dump($textnode);
 						$basenode->appendChild($textnode);
 						break;
 					}
