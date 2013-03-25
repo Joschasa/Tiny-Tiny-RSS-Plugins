@@ -18,6 +18,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_nerfnow (english, http://nerfnow.com/)
  * af_nichtlustig (german, http://nicht-lustig.de/)
  * af_stuttmann (german, http://www.stuttmann-karikaturen.de/)
+ * af_userfriendly (english, http://www.userfriendly.org/)
  * af_xkcd (english, http://xkcd.com/)
 * Other plugins
  * af_daujonas (german, http://www.daujones.com/)
