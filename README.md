@@ -20,5 +20,6 @@ Some plugins for Tiny-Tiny-RSS
  * af_stuttmann (german, http://www.stuttmann-karikaturen.de/)
  * af_xkcd (english, http://xkcd.com/)
 * Other plugins
+ * af_daujonas (german, http://www.daujones.com/)
  * af_titanic (german, http://www.titanic-magazin.de/newsticker.html)
  * af_ssdebian (english, http://screenshots.debian.net/)
