@@ -8,6 +8,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_golem (german, http://www.golem.de/)
  * af_gulli (german, http://www.gulli.com/)
  * af_heise (german, http://www.heise.de/)
+ * af_raumfahrer (german, http://www.raumfahrer.net/)
  * af_taz (german, http://www.taz.de/)
  * af_winfuture (german, http://winfuture.de/)
 * Plugins for webcomics
