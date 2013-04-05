@@ -5,7 +5,7 @@ class Af_BetweenFailures extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Display Between Failures comic directly in feed.",
 			"Joschasa");
 	}
