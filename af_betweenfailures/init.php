@@ -50,7 +50,7 @@ class Af_BetweenFailures extends Plugin {
 						if (!$comic && preg_match("/(http:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"), $matches)) {
 							$basenode = $entry;
 							$src = $basenode->getAttribute("src");
-							$src = preg_replace("/-[0-9]+x[0-9]+.jpg$/", ".jpg", $src);
+							$src = preg_replace("/-[0-9]+x[0-9]+.([a-z]{3})$/", ".$1", $src);
 							$basenode->setAttribute("src", $src);
 							$basenode->removeAttribute("width");
 							$basenode->removeAttribute("height");
