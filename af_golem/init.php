@@ -5,7 +5,7 @@ class Af_Golem extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Load complete golem article into feed.",
 			"Joschasa");
 	}
@@ -20,7 +20,7 @@ class Af_Golem extends Plugin {
 	function hook_article_filter($article) {
 		$owner_uid = $article["owner_uid"];
 
-		if (strpos($article["link"], "golem.de") !== FALSE) {
+		if (strpos($article["guid"], "golem.de") !== FALSE) {
 			if (strpos($article["plugin_data"], "golem,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
