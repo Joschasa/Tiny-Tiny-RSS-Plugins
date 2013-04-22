@@ -5,9 +5,13 @@ class Af_DarkLegacy extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Display Dark Legacy Comic directly in feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {

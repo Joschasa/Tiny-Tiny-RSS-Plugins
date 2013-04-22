@@ -5,9 +5,13 @@ class Af_Stuttmann extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Bigger inline images for the stuttmann caricature feed",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {

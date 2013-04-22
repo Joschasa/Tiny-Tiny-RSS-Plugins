@@ -5,9 +5,13 @@ class af_XKCD extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Copy alt image description as text below the image in xkcd comic feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {

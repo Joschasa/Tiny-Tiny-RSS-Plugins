@@ -5,9 +5,13 @@ class Af_WinFuture extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Load complete winfuture article into feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {
@@ -24,7 +28,7 @@ class Af_WinFuture extends Plugin {
 			if (strpos($article["plugin_data"], "winfuture,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
-				$html = '<?xml encoding="UTF-8">'.fetch_file_contents($article["link"]);
+				$html = mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8");
 				$html = preg_replace("/(<[\ ]*br[\/\ ]*>){2}/", "<br />", $html); // remove double linebreaks
 				@$doc->loadHTML($html);
 

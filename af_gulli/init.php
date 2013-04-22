@@ -5,9 +5,13 @@ class Af_Gulli extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Load complete gulli article into feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {
@@ -24,7 +28,7 @@ class Af_Gulli extends Plugin {
 			if (strpos($article["plugin_data"], "gulli,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
-				@$doc->loadHTML('<?xml encoding="UTF-8">'.fetch_file_contents($article["link"]));
+				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
 				$basenode = false;
 

@@ -5,9 +5,13 @@ class Af_BetweenFailures extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.1,
+		return array(1.2,
 			"Display Between Failures comic directly in feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {

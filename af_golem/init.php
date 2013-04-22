@@ -5,9 +5,13 @@ class Af_Golem extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.1,
+		return array(1.2,
 			"Load complete golem article into feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {
@@ -24,7 +28,7 @@ class Af_Golem extends Plugin {
 			if (strpos($article["plugin_data"], "golem,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
-				@$doc->loadHTML('<?xml encoding="UTF-8">'.fetch_file_contents($article["link"]));
+				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
 				$basenode = false;
 

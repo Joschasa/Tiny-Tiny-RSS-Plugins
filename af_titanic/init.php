@@ -5,9 +5,13 @@ class Af_Titanic extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Load complete Titanic article into feed.",
 			"Joschasa");
+	}
+
+	function api_version() {
+		return 2;
 	}
 
 	function init($host) {
@@ -24,7 +28,7 @@ class Af_Titanic extends Plugin {
 			if (strpos($article["plugin_data"], "titanic,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
-				@$doc->loadHTML('<?xml encoding="UTF-8">'.fetch_file_contents($article["link"]));
+				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
 				$basenode = false;
 
