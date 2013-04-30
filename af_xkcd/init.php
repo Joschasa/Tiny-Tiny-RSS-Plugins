@@ -25,7 +25,7 @@ class af_XKCD extends Plugin {
 		$owner_uid = $article["owner_uid"];
 
 		if (strpos($article["link"], "xkcd.com") !== FALSE) {
-			if (strpos($article["plugin_data"], "TODO xkcdcomic,$owner_uid:") === FALSE) {
+			if (strpos($article["plugin_data"], "xkcdcomic,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
 				@$doc->loadHTML($article["content"]);
