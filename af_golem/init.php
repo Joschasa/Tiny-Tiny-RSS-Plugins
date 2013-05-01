@@ -1,11 +1,10 @@
 <?php
 class Af_Golem extends Plugin {
 
-	private $link;
 	private $host;
 
 	function about() {
-		return array(1.2,
+		return array(1.3,
 			"Load complete golem article into feed.",
 			"Joschasa");
 	}
@@ -15,7 +14,6 @@ class Af_Golem extends Plugin {
 	}
 
 	function init($host) {
-		$this->link = $host->get_link();
 		$this->host = $host;
 
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);

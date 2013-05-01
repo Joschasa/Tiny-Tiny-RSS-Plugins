@@ -1,11 +1,10 @@
 <?php
 class Af_Youtube extends Plugin {
 
-	private $link;
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			'Embed youtube video for youtube feeds.',
 			'Joschasa');
 	}
@@ -15,7 +14,6 @@ class Af_Youtube extends Plugin {
 	}
 
 	function init($host) {
-		$this->link = $host->get_link();
 		$this->host = $host;
 
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
