@@ -4,7 +4,7 @@ class Af_BetweenFailures extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.3,
+		return array(1.4,
 			"Display Between Failures comic directly in feed.",
 			"Joschasa");
 	}
@@ -37,22 +37,16 @@ class Af_BetweenFailures extends Plugin {
 					// starts with number: comic strip
 					// else bonus picture
 
-					$entries = $xpath->query('(//img[@src])');
+					$entries = $xpath->query('(//div[@class="webcomic-image"]/img[@src])');
 
 					$matches = array();
 
 					foreach ($entries as $entry) {
-
-						if ($comic && preg_match("/(http:\/\/.*\/wp-content\/webcomic\/.*)/i", $entry->getAttribute("src"), $matches)) {
-							$basenode = $entry;
-							$basenode->removeAttribute("width");
-							$basenode->removeAttribute("height");
-							break;
-						}
-						if (!$comic && preg_match("/(http:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"), $matches)) {
+						if (preg_match("/(http:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"), $matches)) {
 							$basenode = $entry;
 							$src = $basenode->getAttribute("src");
-							$src = preg_replace("/-[0-9]+x[0-9]+.([a-z]{3})$/", ".$1", $src);
+							if(strpos($src, "sitelogobetweenfailuresalt") !== FALSE) continue;
+							if(!$comic) $src = preg_replace("/-[0-9]+x[0-9]+.([a-z]{3})$/", ".$1", $src);
 							$basenode->setAttribute("src", $src);
 							$basenode->removeAttribute("width");
 							$basenode->removeAttribute("height");
