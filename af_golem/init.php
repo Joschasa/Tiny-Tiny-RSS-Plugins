@@ -34,7 +34,7 @@ class Af_Golem extends Plugin {
 					$xpath = new DOMXPath($doc);
 
 					// first remove advertisement stuff
-					$stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="iqadcenter"])');
+					$stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="iqadcenter"])|(//header[@class="cluster-header"]/p)');
 
 					foreach ($stuff as $removethis) {
 						$removethis->parentNode->removeChild($removethis);
