@@ -19,7 +19,7 @@ class Af_Golem extends Plugin {
 		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
 	}
 
-	function load_page($link){
+	protected function load_page($link){
 		
 		$doc = new DOMDocument();
 		@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($link), 'HTML-ENTITIES', "UTF-8"));
@@ -32,7 +32,7 @@ class Af_Golem extends Plugin {
 
 			$nextpage = $xpath->query('//table[@id="table-jtoc"]/tr/td/a[@id="atoc_next"]');
 			if($nextpage && $nextpage->length > 0 && $nextpage->item(0)->hasAttributes()){
-				$add_content = load_page("http://www.golem.de".$nextpage->item(0)->attributes->getNamedItem("href")->value);
+				$add_content = $this->load_page("http://www.golem.de".$nextpage->item(0)->attributes->getNamedItem("href")->value);
 			}
 
 			// first remove advertisement stuff
@@ -63,7 +63,7 @@ class Af_Golem extends Plugin {
 		if (strpos($article["guid"], "golem.de") !== FALSE) {
 			if (strpos($article["plugin_data"], "golem,$owner_uid:") === FALSE) {
 
-				if( ($content = load_page($article["link"])) != FALSE) {
+				if( ($content = $this->load_page($article["link"])) != FALSE) {
 					$article["content"] = $content;
 					$article["plugin_data"] = "golem,$owner_uid:" . $article["plugin_data"];
 				}
