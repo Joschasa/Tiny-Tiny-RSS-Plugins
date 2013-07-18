@@ -15,6 +15,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_taz (german, http://www.taz.de/)
  * af_thepit (german, http://www.the-pit.de/)
  * af_winfuture (german, http://winfuture.de/)
+ * af_wissenslogs (german, http://www.scilogs.de/)
 * Plugins for webcomics
  * af_beetlebum (german, http://blog.beetlebum.de/)
  * af_betweenfailurse (english, http://betweenfailures.com/)
