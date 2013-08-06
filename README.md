@@ -22,6 +22,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_betweenfailurse (english, http://betweenfailures.com/)
  * af_cad (english, http://www.cad-comic.com/cad/)
  * af_darklegacy (english, http://darklegacycomics.com/)
+ * af_mrlovenstein (english, http://www.mrlovenstein.com/)
  * af_nerfnow (english, http://nerfnow.com/)
  * af_nichtlustig (german, http://nicht-lustig.de/)
  * af_stuttmann (german, http://www.stuttmann-karikaturen.de/)
