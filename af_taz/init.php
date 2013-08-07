@@ -4,7 +4,7 @@ class Af_taz extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.2,
+		return array(1.3,
 			"Load complete taz article into feed.",
 			"Joschasa");
 	}
@@ -47,7 +47,7 @@ class Af_taz extends Plugin {
 						$basenode = $entry;
 
 						// Somehow we got a </div> to many, so lets be lazy and add the rest manually
-						$morecontent = $xpath->query('(//p[@class="article"])');
+						$morecontent = $xpath->query('(//p[contains(@class, "article")])|(//h6)');
 						foreach ($morecontent as $addthis) {
 							$basenode->appendChild($addthis);
 						}
