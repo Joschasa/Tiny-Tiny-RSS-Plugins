@@ -4,7 +4,7 @@ class Af_datenschutzbuero extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Load complete datenschutz.de article into feed.",
 			"Joschasa");
 	}
@@ -26,7 +26,7 @@ class Af_datenschutzbuero extends Plugin {
 			if (strpos($article["plugin_data"], "af_datenschutzbuero,$owner_uid:") === FALSE) {
 
 				$doc = new DOMDocument();
-				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
+				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "auto"));
 
 				$basenode = false;
 
