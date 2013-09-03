@@ -7,6 +7,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_datenschutzbuero (german, http://www.datenschutz.de/)
  * af_emsvechtewelle (german, http://www.emsvechtewelle.de/)
  * af_foebud (german, http://www.foebud.org/)
+ * af_gameone (german, http://www.gameone.de/)
  * af_golem (german, http://www.golem.de/)
  * af_gulli (german, http://www.gulli.com/)
  * af_heise (german, http://www.heise.de/)
