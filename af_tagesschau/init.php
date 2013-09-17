@@ -4,7 +4,7 @@ class Af_tagesschau extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.0,
+		return array(1.1,
 			"Load complete tagesschau.de article into feed",
 			"Joschasa");
 	}
@@ -43,14 +43,13 @@ class Af_tagesschau extends Plugin {
 					$entries = $xpath->query('(//div[@class="box"])');
 
 					foreach ($entries as $entry) {
-
 						$basenode = $entry;
 						break;
 					}
 
 					if ($basenode) {
 						$article["content"] = $doc->saveXML($basenode);
-						/* $article["plugin_data"] = "Af_tagesschau,$owner_uid:" . $article["plugin_data"]; */
+						$article["plugin_data"] = "Af_tagesschau,$owner_uid:" . $article["plugin_data"];
 					}
 				}
 			} else if (isset($article["stored"]["content"])) {
