@@ -4,7 +4,7 @@ class Af_tagesschau extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.1,
+		return array(1.2,
 			"Load complete tagesschau.de article into feed",
 			"Joschasa");
 	}
@@ -34,11 +34,18 @@ class Af_tagesschau extends Plugin {
 					$xpath = new DOMXPath($doc);
 
 					// first remove header, footer
-					$stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline")|(//div[@class="infokasten"])|(//div[@class="linklist"])');
+					$stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline"])|(//div[@class="infokasten"])|(//div[@class="linklist"])|(//img[@title="galerie"])');
 
 					foreach ($stuff as $removethis) {
 						$removethis->parentNode->removeChild($removethis);
 					}
+
+                    /* $iframes = $xpath->query('(//iframe[@src])'); */
+                    /* foreach ($iframes as $iframe) { */
+                    /*     $src = $iframe->getAttribute("src"); */
+                    /*     $src = "http://www.tagesschau.de/"+$src; */
+                    /*     $iframe->setAttribute("src", $src); */
+                    /* } */
 
 					$entries = $xpath->query('(//div[@class="box"])');
 
