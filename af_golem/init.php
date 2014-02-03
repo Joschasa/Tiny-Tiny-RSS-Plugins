@@ -4,7 +4,7 @@ class Af_Golem extends Plugin {
 	private $host;
 
 	function about() {
-		return array(1.3,
+		return array(1.4,
 			"Load complete golem article into feed.",
 			"Joschasa");
 	}
