@@ -12,6 +12,8 @@ Some plugins for Tiny-Tiny-RSS
  * af_gulli (german, http://www.gulli.com/)
  * af_heise (german, http://www.heise.de/)
  * af_raumfahrer (german, http://www.raumfahrer.net/)
+ * af_rockpapershotgun (english, http://www.rockpapershotgun.com/)
+ * af_stimmthaltnicht (german, http://www.stimmthaltnicht.de/)
  * af_sueddeutsche (german, http://www.sueddeutsche.de/)
  * af_tagesschau (german, http://www.tagesschau.de/)
  * af_taz (german, http://www.taz.de/)
@@ -30,7 +32,9 @@ Some plugins for Tiny-Tiny-RSS
  * af_userfriendly (english, http://www.userfriendly.org/)
  * af_xkcd (english, http://xkcd.com/)
 * Other plugins
+ * af_belauscht (german, http://www.belauscht.de/)
  * af_daujonas (german, http://www.daujones.com/)
  * af_titanic (german, http://www.titanic-magazin.de/newsticker.html)
  * af_ssdebian (english, http://screenshots.debian.net/)
- * af_youtube (whatever, http://www.youtube.com)
+ * af_youtube (whatever, http://www.youtube.com/)
+
