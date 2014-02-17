@@ -23,7 +23,6 @@ Some plugins for Tiny-Tiny-RSS
 * Plugins for webcomics
  * af_beetlebum (german, http://blog.beetlebum.de/)
  * af_betweenfailurse (english, http://betweenfailures.com/)
- * af_cad (english, http://www.cad-comic.com/cad/)
  * af_darklegacy (english, http://darklegacycomics.com/)
  * af_mrlovenstein (english, http://www.mrlovenstein.com/)
  * af_nerfnow (english, http://nerfnow.com/)
