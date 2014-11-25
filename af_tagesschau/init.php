@@ -34,7 +34,7 @@ class Af_tagesschau extends Plugin {
 					$xpath = new DOMXPath($doc);
 
 					// first remove header, footer
-					$stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline"])|(//div[@class="infokasten"])|(//div[@class="linklist"])|(//img[@title="galerie"])');
+					$stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline"])|(//div[@class="infokasten"])|(//div[@class="socialMedia"])|(//div[@class="linklist"])|(//img[@title="galerie"])');
 
 					foreach ($stuff as $removethis) {
 						$removethis->parentNode->removeChild($removethis);
