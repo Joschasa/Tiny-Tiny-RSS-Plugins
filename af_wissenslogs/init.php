@@ -1,64 +1,55 @@
 <?php
 class Af_wissenslogs extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.0,
-			"Load complete scilogs.de article into feed",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.1,
+            "Fetch content of scilogs.de feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "scilogs.de/wblogs/blog") !== FALSE) {
+            $doc = new DOMDocument();
+            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
-		if (strpos($article["link"], "scilogs.de/wblogs/blog") !== FALSE) {
-			if (strpos($article["plugin_data"], "Af_wissenslogs,$owner_uid:") === FALSE) {
+            $basenode = false;
 
-				$doc = new DOMDocument();
-				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
 
-				$basenode = false;
+                // first remove header, footer
+                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="socialshareprivacy"])');
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
+                foreach ($stuff as $removethis) {
+                    $removethis->parentNode->removeChild($removethis);
+                }
 
-					// first remove header, footer
-					$stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="socialshareprivacy"])');
+                $entries = $xpath->query('(//div[@class="entrybody"])');
 
-					foreach ($stuff as $removethis) {
-						$removethis->parentNode->removeChild($removethis);
-					}
+                foreach ($entries as $entry) {
 
-					$entries = $xpath->query('(//div[@class="entrybody"])');
+                    $basenode = $entry;
+                    break;
+                }
 
-					foreach ($entries as $entry) {
-
-						$basenode = $entry;
-						break;
-					}
-
-					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
-						/* $article["plugin_data"] = "Af_wissenslogs,$owner_uid:" . $article["plugin_data"]; */
-					}
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                if ($basenode) {
+                    $article["content"] = $doc->saveXML($basenode);
+                }
+            }
+        }
+        return $article;
+    }
 }
 ?>

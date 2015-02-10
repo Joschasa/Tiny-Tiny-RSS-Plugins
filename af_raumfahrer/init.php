@@ -1,62 +1,53 @@
 <?php
 class Af_Raumfahrer extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.2,
-			"Load complete raumfahrer.net article into feed",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.3,
+            "Fetch content of raumfahrer.net feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "raumfahrer.net") !== FALSE) {
+            $doc = new DOMDocument();
+            @$doc->loadHTML(fetch_file_contents($article["link"]));
 
-		if (strpos($article["link"], "raumfahrer.net") !== FALSE) {
-			if (strpos($article["plugin_data"], "raumfahrer,$owner_uid:") === FALSE) {
+            $basenode = false;
 
-				$doc = new DOMDocument();
-				@$doc->loadHTML(fetch_file_contents($article["link"]));
+            // TODO: Add Express mp3 as attachment/enclosure once plugins are able to do that
 
-				$basenode = false;
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
 
-				// TODO: Add Express mp3 as attachment/enclosure once plugins are able to do that
+                $removestuff = $xpath->query('(//div[@class="druckansicht"])|(//td[@class="head"])');
+                foreach ($removestuff as $entry) {
+                    $entry->parentNode->removeChild($entry);
+                }
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
+                $entries = $xpath->query('(//td[@class="tab_text"])');
+                foreach ($entries as $entry) {
+                    $basenode = $entry->parentNode->parentNode;
+                    break;
+                }
 
-					$removestuff = $xpath->query('(//div[@class="druckansicht"])|(//td[@class="head"])');
-					foreach ($removestuff as $entry) {
-						$entry->parentNode->removeChild($entry);
-					}
-
-					$entries = $xpath->query('(//td[@class="tab_text"])');
-					foreach ($entries as $entry) {
-						$basenode = $entry->parentNode->parentNode;
-						break;
-					}
-
-					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
-						$article["plugin_data"] = "raumfahrer,$owner_uid:" . $article["plugin_data"];
-					}
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                if ($basenode) {
+                    $article["content"] = $doc->saveXML($basenode);
+                }
+            }
+        }
+        return $article;
+    }
 }
 ?>

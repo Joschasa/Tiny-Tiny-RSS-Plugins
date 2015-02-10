@@ -1,79 +1,70 @@
 <?php
 class Af_Golem extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.4,
-			"Load complete golem article into feed.",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.5,
+            "Fetch content of golem feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	protected function load_page($link){
-		
-		$doc = new DOMDocument();
-		@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($link), 'HTML-ENTITIES', "UTF-8"));
+    protected function load_page($link){
 
-		$basenode = false;
-		$add_content = "";
+        $doc = new DOMDocument();
+        @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($link), 'HTML-ENTITIES', "UTF-8"));
 
-		if ($doc) {
-			$xpath = new DOMXPath($doc);
+        $basenode = false;
+        $add_content = "";
 
-			$nextpage = $xpath->query('//table[@id="table-jtoc"]/tr/td/a[@id="atoc_next"]');
-			if($nextpage && $nextpage->length > 0 && $nextpage->item(0)->hasAttributes()){
-				$add_content = $this->load_page("http://www.golem.de".$nextpage->item(0)->attributes->getNamedItem("href")->value);
-			}
+        if ($doc) {
+            $xpath = new DOMXPath($doc);
 
-			// first remove advertisement stuff
-			$stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="iqadcenter"])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
+            $nextpage = $xpath->query('//table[@id="table-jtoc"]/tr/td/a[@id="atoc_next"]');
+            if($nextpage && $nextpage->length > 0 && $nextpage->item(0)->hasAttributes()){
+                $add_content = $this->load_page("http://www.golem.de".$nextpage->item(0)->attributes->getNamedItem("href")->value);
+            }
 
-			foreach ($stuff as $removethis) {
-				$removethis->parentNode->removeChild($removethis);
-			}
+            // first remove advertisement stuff
+            $stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="iqadcenter"])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
 
-			// now get the (cleaned) article
-			$entries = $xpath->query('(//article)');
+            foreach ($stuff as $removethis) {
+                $removethis->parentNode->removeChild($removethis);
+            }
 
-			foreach ($entries as $entry) {
-				$basenode = $entry;
-				break;
-			}
+            // now get the (cleaned) article
+            $entries = $xpath->query('(//article)');
 
-			if ($basenode) {
-				return $doc->saveXML($basenode) . $add_content;
-			}
-			else return false;
-		}
-	}
+            foreach ($entries as $entry) {
+                $basenode = $entry;
+                break;
+            }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+            if ($basenode) {
+                return $doc->saveXML($basenode) . $add_content;
+            }
+            else return false;
+        }
+    }
 
-		if (strpos($article["guid"], "golem.de") !== FALSE) {
-			if (strpos($article["plugin_data"], "golem,$owner_uid:") === FALSE) {
+    function hook_article_filter($article) {
+        if (strpos($article["guid"], "golem.de") !== FALSE) {
+            if( ($content = $this->load_page($article["link"])) != FALSE) {
+                $article["content"] = $content;
+            }
 
-				if( ($content = $this->load_page($article["link"])) != FALSE) {
-					$article["content"] = $content;
-					$article["plugin_data"] = "golem,$owner_uid:" . $article["plugin_data"];
-				}
-
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+        }
+        return $article;
+    }
 }
 ?>

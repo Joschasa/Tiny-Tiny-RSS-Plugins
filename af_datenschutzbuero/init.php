@@ -1,64 +1,55 @@
 <?php
 class Af_datenschutzbuero extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.1,
-			"Load complete datenschutz.de article into feed.",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.2,
+            "Fetch content of datenschutz.de feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "datenschutz.de") !== FALSE) {
+            $doc = new DOMDocument();
+            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "auto"));
 
-		if (strpos($article["link"], "datenschutz.de") !== FALSE) {
-			if (strpos($article["plugin_data"], "af_datenschutzbuero,$owner_uid:") === FALSE) {
+            $basenode = false;
 
-				$doc = new DOMDocument();
-				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "auto"));
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
 
-				$basenode = false;
+                // first remove advertisement stuff
+                $stuff = $xpath->query('(//script)|(//noscript)|(//style)|(//hr[@noshade])|(//div[@align="center"])');
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
+                foreach ($stuff as $removethis) {
+                    $removethis->parentNode->removeChild($removethis);
+                }
 
-					// first remove advertisement stuff
-					$stuff = $xpath->query('(//script)|(//noscript)|(//style)|(//hr[@noshade])|(//div[@align="center"])');
+                $entries = $xpath->query('(//div[@id="content"])');
 
-					foreach ($stuff as $removethis) {
-						$removethis->parentNode->removeChild($removethis);
-					}
+                foreach ($entries as $entry) {
 
-					$entries = $xpath->query('(//div[@id="content"])');
+                    $basenode = $entry;
+                    break;
+                }
 
-					foreach ($entries as $entry) {
-
-						$basenode = $entry;
-						break;
-					}
-
-					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
-						$article["plugin_data"] = "af_datenschutzbuero,$owner_uid:" . $article["plugin_data"];
-					}
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                if ($basenode) {
+                    $article["content"] = $doc->saveXML($basenode);
+                }
+            }
+        }
+        return $article;
+    }
 }
 ?>

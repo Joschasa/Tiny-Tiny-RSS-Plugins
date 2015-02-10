@@ -1,75 +1,66 @@
 <?php
 class Af_Titanic extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.2,
-			"Load complete Titanic article into feed.",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.3,
+            "Fetch content of Titanic feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "titanic-magazin.de") !== FALSE) {
+            $doc = new DOMDocument();
+            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
-		if (strpos($article["link"], "titanic-magazin.de") !== FALSE) {
-			if (strpos($article["plugin_data"], "titanic,$owner_uid:") === FALSE) {
+            $basenode = false;
 
-				$doc = new DOMDocument();
-				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
 
-				$basenode = false;
+                // first remove advertisement + tracking stuff
+                $stuff = $xpath->query('(//script)|(//noscript)|(//form)|(//a[@name="form"])|(//p)|(//a[@href="newsticker.html"])');
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
+                foreach ($stuff as $removethis) {
+                    if($removethis->localName === "p")
+                    {
+                        if($removethis->textContent == "bezahlte Anzeige")
+                        {
+                            $removethis->parentNode->removeChild($removethis);
+                        }
+                    }
+                    else
+                    {
+                        $removethis->parentNode->removeChild($removethis);
+                    }
+                }
 
-					// first remove advertisement + tracking stuff
-					$stuff = $xpath->query('(//script)|(//noscript)|(//form)|(//a[@name="form"])|(//p)|(//a[@href="newsticker.html"])');
+                // now get the (cleaned) article
+                $entries = $xpath->query('(//div[@class="tt_news-bodytext"])');
 
-					foreach ($stuff as $removethis) {
-						if($removethis->localName === "p")
-						{
-							if($removethis->textContent == "bezahlte Anzeige")
-							{
-								$removethis->parentNode->removeChild($removethis);
-							}
-						}
-						else
-						{
-							$removethis->parentNode->removeChild($removethis);
-						}
-					}
+                foreach ($entries as $entry) {
 
-					// now get the (cleaned) article
-					$entries = $xpath->query('(//div[@class="tt_news-bodytext"])');
+                    $basenode = $entry;
+                    break;
+                }
 
-					foreach ($entries as $entry) {
-
-						$basenode = $entry;
-						break;
-					}
-
-					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
-						$article["plugin_data"] = "titanic,$owner_uid:" . $article["plugin_data"];
-					}
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                if ($basenode) {
+                    $article["content"] = $doc->saveXML($basenode);
+                }
+            }
+        }
+        return $article;
+    }
 }
 ?>

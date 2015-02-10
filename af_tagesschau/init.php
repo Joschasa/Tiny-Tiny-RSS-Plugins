@@ -1,70 +1,61 @@
 <?php
 class Af_tagesschau extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.2,
-			"Load complete tagesschau.de article into feed",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.3,
+            "Fetch content of tagesschau.de feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "tagesschau.de") !== FALSE) {
+            $doc = new DOMDocument();
+            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
-		if (strpos($article["link"], "tagesschau.de") !== FALSE) {
-			if (strpos($article["plugin_data"], "Af_tagesschau,$owner_uid:") === FALSE) {
+            $basenode = false;
 
-				$doc = new DOMDocument();
-				@$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
 
-				$basenode = false;
+                // first remove header, footer
+                $stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline"])|(//div[@class="infokasten"])|(//div[@class="socialMedia"])|(//div[@class="linklist"])|(//img[@title="galerie"])');
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
+                foreach ($stuff as $removethis) {
+                    $removethis->parentNode->removeChild($removethis);
+                }
 
-					// first remove header, footer
-					$stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline"])|(//div[@class="infokasten"])|(//div[@class="socialMedia"])|(//div[@class="linklist"])|(//img[@title="galerie"])');
+                /* $iframes = $xpath->query('(//iframe[@src])'); */
+                /* foreach ($iframes as $iframe) { */
+                /*     $src = $iframe->getAttribute("src"); */
+                /*     $src = "http://www.tagesschau.de/"+$src; */
+                /*     $iframe->setAttribute("src", $src); */
+                /* } */
 
-					foreach ($stuff as $removethis) {
-						$removethis->parentNode->removeChild($removethis);
-					}
+                $entries = $xpath->query('(//div[@class="box"])');
 
-                    /* $iframes = $xpath->query('(//iframe[@src])'); */
-                    /* foreach ($iframes as $iframe) { */
-                    /*     $src = $iframe->getAttribute("src"); */
-                    /*     $src = "http://www.tagesschau.de/"+$src; */
-                    /*     $iframe->setAttribute("src", $src); */
-                    /* } */
+                foreach ($entries as $entry) {
+                    $basenode = $entry;
+                    break;
+                }
 
-					$entries = $xpath->query('(//div[@class="box"])');
-
-					foreach ($entries as $entry) {
-						$basenode = $entry;
-						break;
-					}
-
-					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
-						$article["plugin_data"] = "Af_tagesschau,$owner_uid:" . $article["plugin_data"];
-					}
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                if ($basenode) {
+                    $article["content"] = $doc->saveXML($basenode);
+                }
+            }
+        }
+        return $article;
+    }
 }
 ?>

@@ -1,60 +1,51 @@
 <?php
 class Af_SSDebian extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.2,
-			"Load screenshots into debian screenshots feed",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.3,
+            "Fetch content of debian screenshots into feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "screenshots.debian.net") !== FALSE) {
+            $feed = new DOMDocument();
 
-		if (strpos($article["link"], "screenshots.debian.net") !== FALSE) {
-			if (strpos($article["plugin_data"], "ssdebian,$owner_uid:") === FALSE) {
+            $doc = new DOMDocument();
+            @$doc->loadHTML(fetch_file_contents($article["link"]));
 
-				$feed = new DOMDocument();
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
+                $entries = $xpath->query('(//a[@href])'); // we might also check for img[@class='strip'] I guess...
 
-				$doc = new DOMDocument();
-				@$doc->loadHTML(fetch_file_contents($article["link"]));
+                $matches = array();
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
-					$entries = $xpath->query('(//a[@href])'); // we might also check for img[@class='strip'] I guess...
+                foreach ($entries as $entry) {
 
-					$matches = array();
+                    if (preg_match("/\/screenshots\/.*large\.png/i", $entry->getAttribute("href"))) {
 
-					foreach ($entries as $entry) {
+                        $picture = $feed->createElement("img");
+                        $picture->setAttribute("src", "http://screenshots.debian.net".$entry->getAttribute("href"));
+                        $feed->appendChild($picture);
+                    }
+                }
 
-						if (preg_match("/\/screenshots\/.*large\.png/i", $entry->getAttribute("href"))) {
-
-							$picture = $feed->createElement("img");
-							$picture->setAttribute("src", "http://screenshots.debian.net".$entry->getAttribute("href"));
-							$feed->appendChild($picture);
-						}
-					}
-
-					$article["content"] = $feed->saveHTML();
-					$article["plugin_data"] = "ssdebian,$owner_uid:" . $article["plugin_data"];
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                $article["content"] = $feed->saveHTML();
+            }
+        }
+        return $article;
+    }
 }
 ?>

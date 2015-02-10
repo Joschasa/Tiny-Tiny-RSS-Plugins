@@ -1,67 +1,58 @@
 <?php
 class Af_WinFuture extends Plugin {
 
-	private $host;
+    private $host;
 
-	function about() {
-		return array(1.3,
-			"Load complete winfuture article into feed.",
-			"Joschasa");
-	}
+    function about() {
+        return array(1.4,
+            "Fetch content of winfuture feed",
+            "Joschasa");
+    }
 
-	function api_version() {
-		return 2;
-	}
+    function api_version() {
+        return 2;
+    }
 
-	function init($host) {
-		$this->host = $host;
+    function init($host) {
+        $this->host = $host;
 
-		$host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
-	}
+        $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
 
-	function hook_article_filter($article) {
-		$owner_uid = $article["owner_uid"];
+    function hook_article_filter($article) {
+        if (strpos($article["link"], "winfuture.de") !== FALSE) {
+            $doc = new DOMDocument();
+            $html = fetch_file_contents($article["link"]);
+            $html = preg_replace("/(<[\ ]*br[\/\ ]*>){2}/", "<br />", $html); // remove double linebreaks
+            @$doc->loadHTML($html);
 
-		if (strpos($article["link"], "winfuture.de") !== FALSE) {
-			if (strpos($article["plugin_data"], "winfuture2,$owner_uid:") === FALSE) {
+            $basenode = false;
 
-				$doc = new DOMDocument();
-				$html = fetch_file_contents($article["link"]);
-				$html = preg_replace("/(<[\ ]*br[\/\ ]*>){2}/", "<br />", $html); // remove double linebreaks
-				@$doc->loadHTML($html);
+            if ($doc) {
+                $xpath = new DOMXPath($doc);
 
-				$basenode = false;
+                // first remove advertisement + tracking stuff
+                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="wf_ContentAd"])|(//div[@id="wf_SingleAd"])|(//img[@width="1"])');
 
-				if ($doc) {
-					$xpath = new DOMXPath($doc);
+                foreach ($stuff as $removethis) {
+                    $removethis->parentNode->removeChild($removethis);
+                }
 
-					// first remove advertisement + tracking stuff
-					$stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="wf_ContentAd"])|(//div[@id="wf_SingleAd"])|(//img[@width="1"])');
+                // now get the (cleaned) article
+                $entries = $xpath->query('(//div[@id="news_content"])');
 
-					foreach ($stuff as $removethis) {
-						$removethis->parentNode->removeChild($removethis);
-					}
+                foreach ($entries as $entry) {
 
-					// now get the (cleaned) article
-					$entries = $xpath->query('(//div[@id="news_content"])');
+                    $basenode = $entry;
+                    break;
+                }
 
-					foreach ($entries as $entry) {
-
-						$basenode = $entry;
-						break;
-					}
-
-					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
-						$article["plugin_data"] = "winfuture,$owner_uid:" . $article["plugin_data"];
-					}
-				}
-			} else if (isset($article["stored"]["content"])) {
-				$article["content"] = $article["stored"]["content"];
-			}
-		}
-
-		return $article;
-	}
+                if ($basenode) {
+                    $article["content"] = $doc->saveXML($basenode);
+                }
+            }
+        }
+        return $article;
+    }
 }
 ?>
