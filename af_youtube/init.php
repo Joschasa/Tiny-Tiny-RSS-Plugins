@@ -4,7 +4,7 @@ class Af_Youtube extends Plugin {
     private $host;
 
     function about() {
-        return array(1.2,
+        return array(1.3,
             "Embed youtube video for youtube feeds.",
             "Joschasa");
     }
