@@ -23,6 +23,7 @@ class Af_Youtube extends Plugin {
         $force = false;
 
         if (strpos($article['link'], 'youtube.com') !== FALSE || strpos($article['link'], 'youtu.be') !== FALSE) {
+            $doc = new DOMDocument();
             @$doc->loadHTML($article['content']);
 
             if ($doc) {
