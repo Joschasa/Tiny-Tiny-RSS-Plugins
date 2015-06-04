@@ -30,28 +30,20 @@ class Af_taz extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 // first remove advertisement stuff
-                $stuff = $xpath->query('(//script)|(//noscript)|(//style)|(//div[@class="sectfoot"])|(//div[@id="tzi_paywall"])');
-
+                $stuff = $xpath->query('(//script)|(//noscript)|(//iframe)|(//style)|(//div[@class="sectfoot"])|(//div[@id="tzi_paywall"])|(//div[contains(@class, "rack")])');
                 foreach ($stuff as $removethis) {
+                    _debug("Remove1: ".$doc->saveXML($removethis));
                     $removethis->parentNode->removeChild($removethis);
                 }
 
                 $entries = $xpath->query('(//div[@class="sectbody"])');
-
                 foreach ($entries as $entry) {
-
                     $basenode = $entry;
-
-                    // Somehow we got a </div> to many, so lets be lazy and add the rest manually
-                    $morecontent = $xpath->query('(//p[contains(@class, "article")])|(//h6)');
-                    foreach ($morecontent as $addthis) {
-                        $basenode->appendChild($addthis);
-                    }
-
                     break;
                 }
 
                 if ($basenode) {
+                    _debug("Result: ".$doc->saveXML($basenode));
                     $article["content"] = $doc->saveXML($basenode);
                 }
             }
