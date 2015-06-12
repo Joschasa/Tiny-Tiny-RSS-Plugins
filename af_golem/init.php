@@ -22,7 +22,13 @@ class Af_Golem extends Plugin {
     protected function load_page($link){
 
         $doc = new DOMDocument();
-        @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($link), 'HTML-ENTITIES', "UTF-8"));
+
+        # curl does not follow the 301?
+        $url = str_replace("-rss", "", $link);
+        $html = fetch_file_contents($url, false, false, false, false, false, 0, "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)");
+
+        $html_enc = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+        $doc->loadHTML($html_enc);
 
         $basenode = false;
         $add_content = "";
