@@ -4,7 +4,7 @@ class Af_sueddeutsche extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Fetch content of sueddeutsche feed",
             "Joschasa");
     }
@@ -30,7 +30,7 @@ class Af_sueddeutsche extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 // first remove header, footer
-                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="ad"])|(//section[@class="header"])|(//section[@class="footer"])|(//span[@class="imagelabel"])');
+                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="ad"])|(//section[@class="article-header"])|(//section[@class="article-footer"])|(//div[@class="article-sidebar-wrapper"])|(//span[@class="imagelabel"])');
 
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
