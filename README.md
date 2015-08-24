@@ -27,6 +27,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_daujonas (german, http://www.daujones.com/)
  * af_titanic (german, http://www.titanic-magazin.de/newsticker.html)
  * af_ssdebian (english, http://screenshots.debian.net/)
+ * af_volksstimme (deutsch, http://www.volksstimme.de/)
  * af_youtube (whatever, http://www.youtube.com/)
 
 * Plugins for webcomics
