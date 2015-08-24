@@ -12,6 +12,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_golem (german, http://www.golem.de/)
  * af_gulli (german, http://www.gulli.com/)
  * af_heise (german, http://www.heise.de/)
+ * af_hltv (english, http://www.hltv.org/)
  * af_raumfahrer (german, http://www.raumfahrer.net/)
  * af_rockpapershotgun (english, http://www.rockpapershotgun.com/)
  * af_stimmthaltnicht (german, http://www.stimmthaltnicht.de/)
