@@ -4,7 +4,7 @@ class Af_tagesschau extends Plugin {
     private $host;
 
     function about() {
-        return array(1.3,
+        return array(1.4,
             "Fetch content of tagesschau.de feed",
             "Joschasa");
     }
@@ -30,20 +30,13 @@ class Af_tagesschau extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 // first remove header, footer
-                $stuff = $xpath->query('(//script)|(//noscript)|(//h3[@class="headline"])|(//div[@class="infokasten"])|(//div[@class="socialMedia"])|(//div[@class="linklist"])|(//img[@title="galerie"])');
+                $stuff = $xpath->query('(//script)|(//noscript)|(//iframe)|(//div[contains(@class, "infokasten")])|(//div[@class="teaser"])|(//div[@class="socialMedia"])|(//div[contains(@class, "linklist")])|(//div[@class="metablockwrapper"])');
 
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
                 }
 
-                /* $iframes = $xpath->query('(//iframe[@src])'); */
-                /* foreach ($iframes as $iframe) { */
-                /*     $src = $iframe->getAttribute("src"); */
-                /*     $src = "http://www.tagesschau.de/"+$src; */
-                /*     $iframe->setAttribute("src", $src); */
-                /* } */
-
-                $entries = $xpath->query('(//div[@class="box"])');
+                $entries = $xpath->query('(//div[contains(@class, "sectionZ")])');
 
                 foreach ($entries as $entry) {
                     $basenode = $entry;
