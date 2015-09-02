@@ -4,7 +4,7 @@ class Af_datenschutzbuero extends Plugin {
     private $host;
 
     function about() {
-        return array(1.2,
+        return array(1.3,
             "Fetch content of datenschutz.de feed",
             "Joschasa");
     }
@@ -17,6 +17,17 @@ class Af_datenschutzbuero extends Plugin {
         $this->host = $host;
 
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+        $host->add_hook($host::HOOK_FEED_FETCHED, $this);
+    }
+
+    function hook_feed_fetched($feed_data, $fetch_url, $owner_uid, $feed) {
+        if (strpos($fetch_url, "datenschutz.de/rss") !== FALSE) {
+            // Feed does not encode & in <description>, but in <title>
+            // For now, there aren't any & in other fields (like url)
+            $feed_data = str_replace('&amp;', '&', $feed_data);
+            $feed_data = str_replace('&', '&amp;', $feed_data);
+        }
+        return $feed_data;
     }
 
     function hook_article_filter($article) {
