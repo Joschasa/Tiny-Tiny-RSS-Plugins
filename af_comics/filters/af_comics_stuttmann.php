@@ -21,7 +21,7 @@ class Af_Comics_Stuttmann extends Af_ComicFilter {
 
                     foreach ($entries as $entry) {
                         $src = $entry->getAttribute("src");
-                        $src = preg_replace("/\/thumb_/", "/kari_", $src);
+                        $src = preg_replace("/\/thumbs\//", "/", $src);
                         /* $src = preg_replace("/jpg$/", "gif", $src); */
                         $entry->setAttribute("src", $src);
                         $found = true;
