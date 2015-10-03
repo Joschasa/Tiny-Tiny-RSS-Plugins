@@ -8,8 +8,8 @@ class Af_Comics_Wordpress extends Af_ComicFilter {
     function process(&$article) {
         $owner_uid = $article["owner_uid"];
 
-		if (strpos($article["link"], "blog.beetlebum.de") !== FALSE ||
-				strpos($article["link"], "commitstrip.com") !== FALSE) {
+        if (strpos($article["link"], "blog.beetlebum.de") !== FALSE ||
+                strpos($article["link"], "commitstrip.com") !== FALSE) {
             if (strpos($article["plugin_data"], "af_comics,$owner_uid:") === FALSE) {
                 $doc = new DOMDocument();
                 @$doc->loadHTML(fetch_file_contents($article["link"]));
