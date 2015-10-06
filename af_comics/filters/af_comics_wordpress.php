@@ -2,13 +2,14 @@
 class Af_Comics_Wordpress extends Af_ComicFilter {
 
     function supported() {
-        return array("Beetlebum", "Commitstrip");
+        return array("Beetlebum", "Commitstrip", "FB-Kundendienst");
     }
 
     function process(&$article) {
         $owner_uid = $article["owner_uid"];
 
         if (strpos($article["link"], "blog.beetlebum.de") !== FALSE ||
+                strpos($article["link"], "fb-kundendienst.de") !== FALSE ||
                 strpos($article["link"], "commitstrip.com") !== FALSE) {
             if (strpos($article["plugin_data"], "af_comics,$owner_uid:") === FALSE) {
                 $doc = new DOMDocument();
@@ -18,13 +19,10 @@ class Af_Comics_Wordpress extends Af_ComicFilter {
 
                 if ($doc) {
                     $xpath = new DOMXPath($doc);
-                    $entries = $xpath->query('(//img[@src])');
-
-                    $matches = array();
+                    $entries = $xpath->query('//div[@class="entry-content"]//img[@src]');
 
                     foreach ($entries as $entry) {
-
-                        if (preg_match("/(http:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"), $matches)) {
+                        if (preg_match("/(https?:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"))) {
                             $basenode = $entry;
                             break;
                         }
