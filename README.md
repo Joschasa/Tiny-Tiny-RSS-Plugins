@@ -30,5 +30,4 @@ Some plugins for Tiny-Tiny-RSS
  * af_youtube (whatever, http://www.youtube.com/)
 
 * Plugins for webcomics
- * Moved all plugins to the official af_comics plugin
- * My fork with updates to af_comics is found here: https://github.com/Joschasa/Tiny-Tiny-RSS/tree/af_comics
+ * Moved all comic filters into the (official) af_comics plugin
