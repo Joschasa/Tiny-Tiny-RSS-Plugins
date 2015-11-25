@@ -4,7 +4,7 @@ class Af_Volksstimme extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.1,
             "Fetch content of volksstimme.de newsfeed",
             "Joschasa");
     }
@@ -24,28 +24,28 @@ class Af_Volksstimme extends Plugin {
             $doc = new DOMDocument();
             @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "auto"));
 
-            $basenode = false;
+            $basenode = "";
 
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
                 // first remove advertisement stuff
-                $stuff = $xpath->query('(//div[contains(@class, "em_left")])|(//div[contains(@class, "em_artikelansicht_tags")])|(//div[contains(@class, "em_ads_")])');
+                /* $stuff = $xpath->query('(//div[contains(@class, "em_left")])|(//div[contains(@class, "em_artikelansicht_tags")])|(//div[contains(@class, "em_ads_")])'); */
 
-                foreach ($stuff as $removethis) {
-                    $removethis->parentNode->removeChild($removethis);
-                }
+                /* foreach ($stuff as $removethis) { */
+                /*     $removethis->parentNode->removeChild($removethis); */
+                /* } */
 
-                $entries = $xpath->query('(//div[@id="em_artikelansicht_artikel"])');
+                $entries = $xpath->query('(//div[@itemprop="image"]|//div[@itemprop="articleBody"])');
 
                 foreach ($entries as $entry) {
-
-                    $basenode = $entry;
-                    break;
+                    _debug("Muh, found stuff...");
+                    $basenode = $basenode . $doc->saveXML($entry);
+                    _debug("Length of basenode: ".strlen($basenode));
                 }
 
-                if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                if (!empty($basenode)) {
+                    $article["content"] = $basenode;
                 }
             }
         }
