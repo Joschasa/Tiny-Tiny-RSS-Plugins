@@ -17,7 +17,7 @@ class Af_Comics_Erzaehlmirnix extends Af_ComicFilter {
 
                 if ($doc) {
                     $xpath = new DOMXPath($doc);
-                    $entries = $xpath->query('(//a/img[contains(@src, "erzaehlmirnix.files.wordpress.com")])');
+                    $entries = $xpath->query('(//img[contains(@src, "erzaehlmirnix.files.wordpress.com")])');
 
                     $found = false;
 
