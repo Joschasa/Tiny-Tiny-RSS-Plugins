@@ -5,7 +5,7 @@ Some plugins for Tiny-Tiny-RSS
 
 * Plugins for news sites
  * af_datenschutzbuero (german, http://www.datenschutz.de/)
- * af_foebud (german, http://www.foebud.org/)
+ * af_digitalcourage (german, https://digitalcourage.de/)
  * af_gamestar (german, http://www.gamestar.de/)
  * af_gnonline (german, http://www.gn-online.de/)
  * af_golem (german, http://www.golem.de/)

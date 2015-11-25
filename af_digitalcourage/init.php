@@ -1,11 +1,11 @@
 <?php
-class Af_FoeBuD extends Plugin {
+class Af_digitalcourage extends Plugin {
 
     private $host;
 
     function about() {
         return array(1.3,
-            "Fetch content of FoeBuD feed",
+            "Fetch content of digitalcourage feed",
             "Joschasa");
     }
 
@@ -20,7 +20,7 @@ class Af_FoeBuD extends Plugin {
     }
 
     function hook_article_filter($article) {
-        if (strpos($article["link"], "foebud.org") !== FALSE) {
+        if (strpos($article["link"], "digitalcourage.de") !== FALSE) {
             $doc = new DOMDocument();
             @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
 
