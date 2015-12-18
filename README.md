@@ -13,6 +13,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_heise (german, http://www.heise.de/)
  * af_hltv (english, http://www.hltv.org/)
  * af_raumfahrer (german, http://www.raumfahrer.net/)
+ * af_ruhrbarone (german, http://www.ruhrbarone.de/)
  * af_rockpapershotgun (english, http://www.rockpapershotgun.com/)
  * af_stimmthaltnicht (german, http://www.stimmthaltnicht.de/)
  * af_sueddeutsche (german, http://www.sueddeutsche.de/)
