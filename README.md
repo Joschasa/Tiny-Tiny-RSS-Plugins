@@ -16,6 +16,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_rockpapershotgun (english, http://www.rockpapershotgun.com/)
  * af_stimmthaltnicht (german, http://www.stimmthaltnicht.de/)
  * af_sueddeutsche (german, http://www.sueddeutsche.de/)
+ * af_spiegel (german, http://www.spiegel.de/)
  * af_tagesschau (german, http://www.tagesschau.de/)
  * af_taz (german, http://www.taz.de/)
  * af_thepit (german, http://www.the-pit.de/)
