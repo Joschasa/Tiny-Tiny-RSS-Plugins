@@ -4,7 +4,7 @@ class Af_tagesschau extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.5,
             "Fetch content of tagesschau.de feed",
             "Joschasa");
     }
@@ -31,13 +31,22 @@ class Af_tagesschau extends Plugin {
 
                 // first remove header, footer
                 $stuff = $xpath->query('(//script)|(//noscript)|(//iframe)|(//div[contains(@class, "infokasten")])|(//div[@class="teaser"])|(//div[@class="socialMedia"])|(//div[contains(@class, "linklist")])|(//div[@class="metablockwrapper"])');
-
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
                 }
 
-                $entries = $xpath->query('(//div[contains(@class, "sectionZ")])');
+                // rewrite gallery-icon with textlink
+                $linktext = new DOMText('(Galerie)');
+                $galllink = $xpath->query('(//img[contains(@src, "galerie.png")])');
+                foreach ($galllink as $img) {
+                    $link = $img->parentNode;
+                    foreach ($link->childNodes as $child) {
+                        $link->removeChild($child);
+                    }
+                    $link->appendChild($linktext);
+                }
 
+                $entries = $xpath->query('(//div[contains(@class, "sectionZ")])');
                 foreach ($entries as $entry) {
                     $basenode = $entry;
                     break;
