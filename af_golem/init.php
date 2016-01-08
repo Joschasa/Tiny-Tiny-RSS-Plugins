@@ -4,7 +4,7 @@ class Af_Golem extends Plugin {
     private $host;
 
     function about() {
-        return array(1.6,
+        return array(1.7,
             "Fetch content of golem feed",
             "Joschasa");
     }
@@ -23,12 +23,11 @@ class Af_Golem extends Plugin {
 
         $doc = new DOMDocument();
 
-        # curl does not follow the 301?
         $url = str_replace("-rss", "", $link);
         $html = fetch_file_contents($url, false, false, false, false, false, 0, "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)");
 
-        $html_enc = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
-        $doc->loadHTML($html_enc);
+        // $html_enc = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
+        $doc->loadHTML($html);
 
         $basenode = false;
         $add_content = "";
@@ -42,15 +41,13 @@ class Af_Golem extends Plugin {
             }
 
             // first remove advertisement stuff
-            $stuff = $xpath->query('(//script)|(//noscript)|(//div[contain(@class, "iqad")])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
-
+            $stuff = $xpath->query('(//script)|(//noscript)|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
             foreach ($stuff as $removethis) {
                 $removethis->parentNode->removeChild($removethis);
             }
 
             // now get the (cleaned) article
             $entries = $xpath->query('(//article)');
-
             foreach ($entries as $entry) {
                 $basenode = $entry;
                 break;
