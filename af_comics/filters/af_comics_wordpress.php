@@ -24,6 +24,7 @@ class Af_Comics_Wordpress extends Af_ComicFilter {
 
                     foreach ($entries as $entry) {
                         if (preg_match("/(https?:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"))) {
+                            $entry->removeAttribute("srcset");
                             $basenode = $entry;
                             break;
                         }
