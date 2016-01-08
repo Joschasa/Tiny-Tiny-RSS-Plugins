@@ -4,7 +4,7 @@ class Af_spiegel extends Plugin {
     private $host;
 
     function about() {
-        return array(1.2,
+        return array(1.3,
             "Fetch content of spiegel.de feed",
             "Joschasa");
     }
@@ -22,7 +22,7 @@ class Af_spiegel extends Plugin {
     function hook_article_filter($article) {
         if (strpos($article["link"], "spiegel.de") !== FALSE) {
             $doc = new DOMDocument();
-            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
+            @$doc->loadHTML(fetch_file_contents($article["link"]));
 
             $basenode = false;
 
