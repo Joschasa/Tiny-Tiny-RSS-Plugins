@@ -4,7 +4,7 @@ class Af_WinFuture extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.5,
             "Fetch content of winfuture feed",
             "Joschasa");
     }
@@ -23,7 +23,8 @@ class Af_WinFuture extends Plugin {
         if (strpos($article["link"], "winfuture.de") !== FALSE) {
             $doc = new DOMDocument();
             $html = fetch_file_contents($article["link"]);
-            $html = preg_replace("/(<[\ ]*br[\/\ ]*>){2}/", "<br />", $html); // remove double linebreaks
+            $html = preg_replace('/(<[\ ]*br[\/\ ]*>){2}/', '<br />', $html); // remove double linebreaks
+            $html = preg_replace('/<script .*<\/script>/', '', $html); // remove <script>-Tags (causing trouble with nested <div>-writes)
             @$doc->loadHTML($html);
 
             $basenode = false;
@@ -32,17 +33,14 @@ class Af_WinFuture extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 // first remove advertisement + tracking stuff
-                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="wf_ContentAd"])|(//div[@id="wf_SingleAd"])|(//img[@width="1"])');
-
+                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="wf_ContentAd"])|(//div[@class="wf_SingleAdNews"])|(//img[@width="1"])');
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
                 }
 
                 // now get the (cleaned) article
                 $entries = $xpath->query('(//div[@id="news_content"])');
-
                 foreach ($entries as $entry) {
-
                     $basenode = $entry;
                     break;
                 }
