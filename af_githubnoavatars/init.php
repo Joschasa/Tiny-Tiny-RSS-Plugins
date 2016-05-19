@@ -4,7 +4,7 @@ class Af_GithubNoAvatars extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.1,
             "Remove avatars in github feed",
             "Joschasa");
     }
@@ -17,6 +17,19 @@ class Af_GithubNoAvatars extends Plugin {
         $this->host = $host;
 
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+        $host->add_hook($host::HOOK_FORMAT_ENCLOSURES, $this);
+    }
+
+    public function hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images)
+    {
+        $newresult = array();
+        foreach ($result as $enc) {
+            $url = $enc['content_url'];
+            if (strpos($url, 'githubusercontent') === FALSE || strpos($url, 'avatar') === FALSE ) {
+                $newresult[] = $enc;
+            }
+        }
+        return array('', $newresult);
     }
 
     function hook_article_filter($article) {
@@ -29,8 +42,7 @@ class Af_GithubNoAvatars extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                // remove category stuff
-                $stuff = $xpath->query('(//img[contains(@src,"avatar")])');
+                $stuff = $xpath->query('//img');
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
                 }
