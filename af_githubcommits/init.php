@@ -4,7 +4,7 @@ class Af_GithubCommits extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.1,
             "Show all commits in github feed.",
             "Joschasa");
     }
@@ -36,14 +36,16 @@ class Af_GithubCommits extends Plugin {
 
                 }
                 // Fetch 'x more commits >>'
-                $stuff = $xpath->query('//a[contains(text()," more commits ")]');
+                $stuff = $xpath->query('//a[contains(text()," more commit")]');
                 foreach ($stuff as $removethis) {
-                    // 1. Remove old link
+                    // 1. Remove old links
                     $url = $removethis->attributes->getNamedItem("href")->value;
-                    _debug('URL = '.$url);
+                    /* _debug('URL = '.$url); */
                     $item = $removethis->parentNode;
                     $list = $item->parentNode;
-                    $list->removeChild($item);
+                    while($list->childNodes->length > 0) {
+                        $list->removeChild($list->childNodes->item(0));
+                    }
 
                     // 2. Fetch URL (.patch)
                     $patch = fetch_file_contents('https://www.github.com/'.$url.'.patch');
@@ -54,20 +56,26 @@ class Af_GithubCommits extends Plugin {
                     $subjectlength = strlen('Subject: ');
                     $curSubject = '';
                     $curHash = '';
+                    $subLastline = false;
                     $linkbase = substr($article['link'], 0, strpos($article['link'], 'compare'));
                     foreach ($lines as $line) {
+                        if ($subLastline && substr($line, 0, 1) === ' ') {
+                            $curSubject = $curSubject.$line;
+                        } else
+                            $subLastline = false;
                         if (substr($line, 0, $subjectlength) === 'Subject: ') {
                             $curSubject = substr($line, $subjectlength);
-                            _debug('Found subject: '.$curSubject);
+                            /* _debug('Found subject: '.$curSubject); */
+                            $subLastline = true;
                         }
                         elseif (substr($line, 0, $fromlength) === 'From ') {
                             $curHash = substr($line, $fromlength, 40);
-                            _debug('Found hash: '.$curHash);
+                            /* _debug('Found hash: '.$curHash); */
                         }
                         else { continue; }
                         if (!empty($curSubject) && !empty($curHash)) {
                             // Found patchlink&title, rebuild ul structure for feed
-                            _debug('Found both, blabla!');
+                            /* _debug('Found both, blabla!'); */
                             $li    = $doc->createElement('li');
                             $code  = $doc->createElement('code');
                             $a     = $doc->createElement('a');
@@ -95,10 +103,10 @@ class Af_GithubCommits extends Plugin {
 
                 if ($node) {
                     $article["content"] = $doc->saveXML($node);
-                    _debug('Article Content: ');
-                    _debug('<pre>');
-                    _debug($article["content"]);
-                    _debug('</pre>');
+                    /* _debug('Article Content: '); */
+                    /* _debug('<pre>'); */
+                    /* _debug($article["content"]); */
+                    /* _debug('</pre>'); */
                 }
             }
         }

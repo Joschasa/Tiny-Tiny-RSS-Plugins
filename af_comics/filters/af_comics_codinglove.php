@@ -1,16 +1,14 @@
 <?php
-class Af_Comics_Wordpress extends Af_ComicFilter {
+class Af_Comics_CodingLove extends Af_ComicFilter {
 
     function supported() {
-        return array("Beetlebum", "Commitstrip", "MARYDEATH");
+        return array("The Coding Love");
     }
 
     function process(&$article) {
         $owner_uid = $article["owner_uid"];
 
-        if (strpos($article["link"], "blog.beetlebum.de") !== FALSE ||
-                strpos($article["link"], "marydeathcomics.com") !== FALSE ||
-                strpos($article["link"], "commitstrip.com") !== FALSE) {
+        if (strpos($article["link"], "thecodinglove.com") !== FALSE) {
             if (strpos($article["plugin_data"], "af_comics,$owner_uid:") === FALSE) {
                 $doc = new DOMDocument();
                 @$doc->loadHTML(fetch_file_contents($article["link"]));
@@ -19,11 +17,10 @@ class Af_Comics_Wordpress extends Af_ComicFilter {
 
                 if ($doc) {
                     $xpath = new DOMXPath($doc);
-                    $entries = $xpath->query('(//div[@class="entry-content"]//img[@src])|(//div[@id="content-wrapper"]//img[@src])');
+                    $entries = $xpath->query('//div[@class="post"]//img[@src]');
 
                     foreach ($entries as $entry) {
-                        if (preg_match("/(https?:\/\/.*\/wp-content\/uploads\/.*)/i", $entry->getAttribute("src"))) {
-                            $entry->removeAttribute("srcset");
+                        if (preg_match("/(host|imgur)\.com/", $entry->getAttribute("src"))) {
                             $basenode = $entry;
                             break;
                         }
