@@ -4,7 +4,7 @@ class Af_GithubCommits extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Show all commits in github feed.",
             "Joschasa");
     }
@@ -15,7 +15,6 @@ class Af_GithubCommits extends Plugin {
 
     function init($host) {
         $this->host = $host;
-
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
     }
 
@@ -95,6 +94,7 @@ class Af_GithubCommits extends Plugin {
 
                             $curHash = '';
                             $curSubject = '';
+                            $subLastline = false;
                         }
                     }
                 }
