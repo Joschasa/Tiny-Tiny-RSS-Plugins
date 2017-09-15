@@ -28,7 +28,6 @@ Some plugins for Tiny-Tiny-RSS
  * af_wzde (german, http://www.wz.de)
 * Other plugins
  * af_belauscht (german, http://www.belauscht.de/)
- * af_daujonas (german, http://www.daujones.com/)
  * af_githubcommits (-, https://www.github.com/)
  * af_githubnoavatars (-, https://www.github.com/)
  * af_titanic (german, http://www.titanic-magazin.de/newsticker.html)
