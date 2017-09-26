@@ -4,7 +4,7 @@ class Af_faz extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Fetch content of FAZ feed",
             "Joschasa");
     }
@@ -28,14 +28,21 @@ class Af_faz extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $entries = $xpath->query('(//p[@class="Headline"])|(//div[@id="artikelEinleitung"]/p[@class="Copy"])|(//div[contains(@class, "FAZArtikelText")]/div/div[contains(@class, "ArtikelBild")])|(//div[contains(@class, "FAZArtikelText")]/div/p)');
-
-                $basenode = "";
-                foreach ($entries as $entry) {
-                    $basenode = $basenode . $doc->saveXML($entry);
+                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="atc-ContainerSocialMedia"])|(//figure)|(//aside)');
+                foreach ($stuff as $removethis) {
+                    $removethis->parentNode->removeChild($removethis);
                 }
 
-                $article["content"] = $basenode;
+                $entries = $xpath->query('(//div[@itemprop="articleBody"])|(//div[@class="single-entry-content"])');
+
+                $basenode = false;
+                foreach ($entries as $entry) {
+                    $basenode = $doc->saveHTML($entry);
+                }
+
+                if($basenode) {
+                    $article["content"] = $basenode;
+                }
             }
         }
         return $article;
