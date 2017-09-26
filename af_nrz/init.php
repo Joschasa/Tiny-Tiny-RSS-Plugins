@@ -4,7 +4,7 @@ class Af_nrz extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.1,
             "Fetch content of NRZ feed",
             "Joschasa");
     }
@@ -27,14 +27,12 @@ class Af_nrz extends Plugin {
 
             if ($doc) {
                 $xpath = new DOMXPath($doc);
-                _debug("Complete:".$doc->saveXML());
 /* (//div[@class="article__body"]/div[@class="article__header__intro"/p[@class="class="article__header__intro""])| */
                 $entries = $xpath->query('(//article/div/p)');
 
                 $basenode = "";
                 foreach ($entries as $entry) {
-                    $basenode = $basenode . $doc->saveXML($entry);
-                    _debug("Added:".$doc->saveXML($entry));
+                    $basenode = $basenode . $doc->saveHTML($entry);
                 }
 
                 $article["content"] = $basenode;

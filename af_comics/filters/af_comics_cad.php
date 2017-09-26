@@ -21,7 +21,7 @@ class Af_Comics_Cad extends Af_ComicFilter {
 					$basenode = $xpath->query('(//img[contains(@src, "/comics/sillies-")]|//img[contains(@src, "/comics/cad-")])')->item(0);
 
 					if ($basenode) {
-						$article["content"] = $doc->saveXML($basenode);
+						$article["content"] = $doc->saveHTML($basenode);
 					}
 				}
 

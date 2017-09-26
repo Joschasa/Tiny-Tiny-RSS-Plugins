@@ -4,7 +4,7 @@ class Af_taz extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.5,
             "Fetch content of taz feed",
             "Joschasa");
     }
@@ -32,7 +32,6 @@ class Af_taz extends Plugin {
                 // first remove advertisement stuff
                 $stuff = $xpath->query('(//script)|(//noscript)|(//iframe)|(//style)|(//div[@class="sectfoot"])|(//div[@id="tzi_paywall"])|(//div[contains(@class, "rack")])');
                 foreach ($stuff as $removethis) {
-                    _debug("Remove1: ".$doc->saveXML($removethis));
                     $removethis->parentNode->removeChild($removethis);
                 }
 
@@ -43,8 +42,7 @@ class Af_taz extends Plugin {
                 }
 
                 if ($basenode) {
-                    _debug("Result: ".$doc->saveXML($basenode));
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

@@ -4,7 +4,7 @@ class Af_Heise extends Plugin {
     private $host;
 
     function about() {
-        return array(1.3,
+        return array(1.4,
             "Fetch content of heise.de feed",
             "Joschasa");
     }
@@ -28,7 +28,7 @@ class Af_Heise extends Plugin {
 
             if ($doc) {
                 $xpath = new DOMXPath($doc);
-                $entries = $xpath->query('(//div[@class="meldung_wrapper"])');
+                $entries = $xpath->query('(//div[@class="article-content"])');
 
                 foreach ($entries as $entry) {
 
@@ -37,7 +37,7 @@ class Af_Heise extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

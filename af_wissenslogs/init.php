@@ -4,7 +4,7 @@ class Af_wissenslogs extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Fetch content of scilogs.de feed",
             "Joschasa");
     }
@@ -45,7 +45,7 @@ class Af_wissenslogs extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

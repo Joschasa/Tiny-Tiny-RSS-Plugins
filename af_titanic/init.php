@@ -4,7 +4,7 @@ class Af_Titanic extends Plugin {
     private $host;
 
     function about() {
-        return array(1.3,
+        return array(1.4,
             "Fetch content of Titanic feed",
             "Joschasa");
     }
@@ -56,7 +56,7 @@ class Af_Titanic extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

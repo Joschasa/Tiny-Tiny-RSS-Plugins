@@ -4,7 +4,7 @@ class Af_rponline extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.1,
             "Fetch content of RP Online feed",
             "Joschasa");
     }
@@ -31,7 +31,7 @@ class Af_rponline extends Plugin {
 
                 $basenode = "";
                 foreach ($entries as $entry) {
-                    $basenode = $basenode . $doc->saveXML($entry);
+                    $basenode = $basenode . $doc->saveHTML($entry);
                 }
 
                 $article["content"] = $basenode;

@@ -4,7 +4,7 @@ class Af_Gulli extends Plugin {
     private $host;
 
     function about() {
-        return array(1.3,
+        return array(1.4,
             "Fetch content of gulli.com feed",
             "Joschasa");
     }
@@ -46,7 +46,7 @@ class Af_Gulli extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

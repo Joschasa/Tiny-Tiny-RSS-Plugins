@@ -30,7 +30,7 @@ class Af_Comics_Wordpress extends Af_ComicFilter {
                     }
 
                     if ($basenode) {
-                        $article["content"] = $doc->saveXML($basenode);
+                        $article["content"] = $doc->saveHTML($basenode);
                         $article["plugin_data"] = "af_comics,$owner_uid:" . $article["plugin_data"];
                     }
                 }

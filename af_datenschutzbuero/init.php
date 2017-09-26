@@ -4,7 +4,7 @@ class Af_datenschutzbuero extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.5,
             "Fetch content of datenschutz.de feed",
             "Joschasa");
     }
@@ -57,7 +57,7 @@ class Af_datenschutzbuero extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

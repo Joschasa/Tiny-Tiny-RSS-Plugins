@@ -4,7 +4,7 @@ class Af_GNOnline extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.1,
             "Fetch content of gn-online.de feed",
             "Joschasa");
     }
@@ -37,7 +37,7 @@ class Af_GNOnline extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

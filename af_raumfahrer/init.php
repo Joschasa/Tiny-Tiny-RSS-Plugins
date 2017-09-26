@@ -4,7 +4,7 @@ class Af_Raumfahrer extends Plugin {
     private $host;
 
     function about() {
-        return array(1.3,
+        return array(1.4,
             "Fetch content of raumfahrer.net feed",
             "Joschasa");
     }
@@ -43,7 +43,7 @@ class Af_Raumfahrer extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

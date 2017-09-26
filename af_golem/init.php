@@ -4,7 +4,7 @@ class Af_Golem extends Plugin {
     private $host;
 
     function about() {
-        return array(1.7,
+        return array(1.8,
             "Fetch content of golem feed",
             "Joschasa");
     }
@@ -54,7 +54,7 @@ class Af_Golem extends Plugin {
             }
 
             if ($basenode) {
-                return $doc->saveXML($basenode) . $add_content;
+                return $doc->saveHTML($basenode) . $add_content;
             }
             else return false;
         }

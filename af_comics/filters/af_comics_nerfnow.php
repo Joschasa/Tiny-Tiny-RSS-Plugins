@@ -30,7 +30,7 @@ class Af_Comics_NerfNow extends Af_ComicFilter {
                     $node = $doc->getElementsByTagName('body')->item(0);
 
                     if ($node && $found) {
-                        $article["content"] = $doc->saveXML($node);
+                        $article["content"] = $doc->saveHTML($node);
                         $article["plugin_data"] = "af_comics,$owner_uid:" . $article["plugin_data"];
                     }
                 }

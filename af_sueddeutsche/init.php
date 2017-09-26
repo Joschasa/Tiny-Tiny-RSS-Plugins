@@ -4,7 +4,7 @@ class Af_sueddeutsche extends Plugin {
     private $host;
 
     function about() {
-        return array(1.2,
+        return array(1.3,
             "Fetch content of sueddeutsche feed",
             "Joschasa");
     }
@@ -45,7 +45,7 @@ class Af_sueddeutsche extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }

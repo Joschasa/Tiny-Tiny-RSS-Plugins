@@ -4,7 +4,7 @@ class Af_GithubCommits extends Plugin {
     private $host;
 
     function about() {
-        return array(1.2,
+        return array(1.3,
             "Show all commits in github feed.",
             "Joschasa");
     }
@@ -102,7 +102,7 @@ class Af_GithubCommits extends Plugin {
                 $node = $doc->getElementsByTagName('body')->item(0);
 
                 if ($node) {
-                    $article["content"] = $doc->saveXML($node);
+                    $article["content"] = $doc->saveHTML($node);
                     /* _debug('Article Content: '); */
                     /* _debug('<pre>'); */
                     /* _debug($article["content"]); */

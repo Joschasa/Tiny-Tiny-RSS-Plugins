@@ -4,7 +4,7 @@ class Af_GithubNoAvatars extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Remove avatars in github feed",
             "Joschasa");
     }
@@ -50,7 +50,7 @@ class Af_GithubNoAvatars extends Plugin {
                 $node = $doc->getElementsByTagName('body')->item(0);
 
                 if ($node) {
-                    $article["content"] = $doc->saveXML($node);
+                    $article["content"] = $doc->saveHTML($node);
                 }
             }
         }

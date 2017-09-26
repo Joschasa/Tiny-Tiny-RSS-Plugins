@@ -4,7 +4,7 @@ class Af_Volksstimme extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Fetch content of volksstimme.de newsfeed",
             "Joschasa");
     }
@@ -40,7 +40,7 @@ class Af_Volksstimme extends Plugin {
 
                 foreach ($entries as $entry) {
                     _debug("Muh, found stuff...");
-                    $basenode = $basenode . $doc->saveXML($entry);
+                    $basenode = $basenode . $doc->saveHTML($entry);
                     _debug("Length of basenode: ".strlen($basenode));
                 }
 

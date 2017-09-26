@@ -4,7 +4,7 @@ class Af_tagesschau extends Plugin {
     private $host;
 
     function about() {
-        return array(1.5,
+        return array(1.6,
             "Fetch content of tagesschau.de feed",
             "Joschasa");
     }
@@ -53,7 +53,7 @@ class Af_tagesschau extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveXML($basenode);
+                    $article["content"] = $doc->saveHTML($basenode);
                 }
             }
         }
