@@ -4,9 +4,9 @@ class Af_Heise extends Plugin {
     private $host;
 
     function about() {
-        return array(1.0,
+        return array(1.5,
             "Fetch content of heise.de feed",
-            "Roman");
+            "Joschasa");
     }
 
     function api_version() {
