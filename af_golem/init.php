@@ -4,7 +4,7 @@ class Af_Golem extends Plugin {
     private $host;
 
     function about() {
-        return array(1.8,
+        return array(1.9,
             "Fetch content of golem feed",
             "Joschasa");
     }
@@ -41,7 +41,7 @@ class Af_Golem extends Plugin {
             }
 
             // first remove advertisement stuff
-            $stuff = $xpath->query('(//script)|(//noscript)|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
+            $stuff = $xpath->query('(//script)|(//noscript)|(//style)|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
             foreach ($stuff as $removethis) {
                 $removethis->parentNode->removeChild($removethis);
             }
