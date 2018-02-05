@@ -4,7 +4,7 @@ class Af_Raumfahrer extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.5,
             "Fetch content of raumfahrer.net feed",
             "Joschasa");
     }
@@ -31,7 +31,7 @@ class Af_Raumfahrer extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $removestuff = $xpath->query('(//div[@class="druckansicht"])|(//td[@class="head"])');
+                $removestuff = $xpath->query('(//div[@class="druckansicht"])|(//span[@class="head"])');
                 foreach ($removestuff as $entry) {
                     $entry->parentNode->removeChild($entry);
                 }

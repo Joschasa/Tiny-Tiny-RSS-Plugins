@@ -28,7 +28,7 @@ class Af_Heise extends Plugin {
 
             if ($doc) {
                 $xpath = new DOMXPath($doc);
-                $entries = $xpath->query('(//div[@class="article-content"])');
+                $entries = $xpath->query('(//div[@class="meldung-wrapper"]|//div[@class="article-content"])');
 
                 foreach ($entries as $entry) {
 
