@@ -4,7 +4,7 @@ class Af_Heise extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.5,
             "Fetch content of heise.de feed",
             "Joschasa");
     }
@@ -21,8 +21,12 @@ class Af_Heise extends Plugin {
 
     function hook_article_filter($article) {
         if (strpos($article["link"], "heise.de") !== FALSE) {
+            $link_orig = $article["link"];
+            $link_complete_article = substr($link, 0, strrpos($link, '?'));
+            $link = $link_orig.'?artikelseite=all';
+
             $doc = new DOMDocument();
-            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($article["link"]), 'HTML-ENTITIES', "UTF-8"));
+            @$doc->loadHTML(mb_convert_encoding(fetch_file_contents($link), 'HTML-ENTITIES', "UTF-8"));
 
             $basenode = false;
 

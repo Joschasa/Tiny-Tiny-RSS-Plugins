@@ -4,7 +4,7 @@ class Af_spiegel extends Plugin {
     private $host;
 
     function about() {
-        return array(1.4,
+        return array(1.6,
             "Fetch content of spiegel.de feed",
             "Joschasa");
     }
@@ -30,7 +30,7 @@ class Af_spiegel extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 // first remove header, footer
-                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@class="content_ad_"])|(//div[@class="article-function-social-media"])');
+                $stuff = $xpath->query('(//script)|(//noscript)|(//div[contains(@class, "content_ad_")])|(//div[@class="article-function-social-media"])|(//div[contains(@class, "article-function-box")])');
 
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
