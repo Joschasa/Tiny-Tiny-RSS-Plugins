@@ -4,7 +4,7 @@ class Af_Golem extends Plugin {
     private $host;
 
     function about() {
-        return array(1.9,
+        return array(1.10,
             "Fetch content of golem feed",
             "Joschasa");
     }
@@ -17,6 +17,16 @@ class Af_Golem extends Plugin {
         $this->host = $host;
 
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
+    }
+
+    private function removeStuff($xpath, $filter) {
+        _debug("[RemoveStuff] Running filter " . $filter);
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
     }
 
     protected function load_page($link){
@@ -40,11 +50,8 @@ class Af_Golem extends Plugin {
                 $add_content = $this->load_page("http://www.golem.de".$nextpage->item(0)->attributes->getNamedItem("href")->value);
             }
 
-            // first remove advertisement stuff
-            $stuff = $xpath->query('(//script)|(//noscript)|(//style)|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//ol[@id="list-jtoc"])|(//table[@id="table-jtoc"])|(//header[@class="cluster-header"]/h1)');
-            foreach ($stuff as $removethis) {
-                $removethis->parentNode->removeChild($removethis);
-            }
+            // Remove advertising and scripts
+            $this->removeStuff($xpath, '(//script)|(//noscript)|(//style)|(//ul[contains(@class, "social-tools")])|(//section[@id="job-market"])|(//div[@id="breadcrumbs"])|(//div[@class="tags"])|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//header[@class="cluster-header"]/h1)');
 
             // now get the (cleaned) article
             $entries = $xpath->query('(//article)');
@@ -63,6 +70,7 @@ class Af_Golem extends Plugin {
     function hook_article_filter($article) {
         if (strpos($article["guid"], "golem.de") !== FALSE) {
             if( ($content = $this->load_page($article["link"])) != FALSE) {
+                // _debug('<pre>'.$content.'</pre>');
                 $article["content"] = $content;
             }
 
