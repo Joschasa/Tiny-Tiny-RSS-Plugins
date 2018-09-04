@@ -24,7 +24,7 @@ class Af_Heise extends Plugin {
             $link_orig = $article["link"]; //e.g.: "https://www.heise.de/newsticker/meldung/Waehrung-oder-Spekulationsobjekt-das-Bitcoin-Dilemma-Zahlen-oder-Zocken-3926657.html?wt_mc=rss.ho.beitrag.atom";
             $link_complete_article = substr($link_orig, 0, strrpos($link_orig, '?'));
 
-            //All articles on a single page please
+            //Not all article-links end with a ".html", so we have to append it in that case.
             if(strrpos($link_complete_article, '.html') !== false) {
                 $link = $link_complete_article.'?seite=all';
             }
@@ -41,8 +41,7 @@ class Af_Heise extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 //Remove unneeded stuff
-                $stuff = $xpath->query('(//script)|(//noscript)|(//a[@class="hinweis_anzeige"])|(//div[@class="shariff"])|(//p[@class="themenseiten"])|(//p[@class="permalink"])|(//p[@class="printversion"])|(//footer)|
-                (//div[@class="adbottom"])|(//div[@class="rte__dossier"])|(//div[@class="publish-info"])|(//h2[@class="article__heading"])|(//p[@class="article-content__lead"])|(//div[@class="creator-info"])|(//div[@class="article-footer__content"])|(//section)');
+                $stuff = $xpath->query('(//script)|(//noscript)|(//a[@class="hinweis_anzeige"])|(//div[@class="shariff"])|(//p[@class="themenseiten"])|(//p[@class="permalink"])|(//p[@class="printversion"])|(//footer)|(//div[@class="adbottom"])|(//div[@class="rte__dossier"])|(//div[@class="publish-info"])|(//h2[@class="article__heading"])|(//p[@class="article-content__lead"])|(//div[@class="creator-info"])|(//div[@class="article-footer__content"])|(//section)');
                 foreach ($stuff as $removethis) {
                     $removethis->parentNode->removeChild($removethis);
                 }
