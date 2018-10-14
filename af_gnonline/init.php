@@ -4,7 +4,7 @@ class Af_GNOnline extends Plugin {
     private $host;
 
     function about() {
-        return array(1.2,
+        return array(1.3,
             "Fetch content of gn-online.de feed",
             "Joschasa");
     }
@@ -33,19 +33,32 @@ class Af_GNOnline extends Plugin {
         if (strpos($article["link"], "gn-online.de") !== FALSE) {
             $doc = new DOMDocument();
             $html = fetch_file_contents($article["link"]);
+
             @$doc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8"));
 
-            $basenode = false;
+            $paidContent = (strpos($html, "...WEITERLESEN?") !== FALSE);
 
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $this->removeStuff($xpath, '(//script)|(//noscript)|(//div[contains(@class, "StoryShowShare")])');
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//header)|(//div[@class="clear"])');
+                $this->removeStuff($xpath, '(//div[contains(@class, "StoryShowShare")])|(//div[contains(@class, "StoryShowInteraction")])');
 
-                $entries = $xpath->query('(//div[@class="StoryShowBaseTextBox"])');
+                $entries = $xpath->query('(//span[@class="Ortsmarke"])');
                 foreach ($entries as $entry) {
-                    $new_content = $doc->saveHTML($entry);
-                    break;
+                    $entry->textContent = '[' . trim($entry->textContent) . '] ';
+                }
+
+                if ($paidContent) {
+                    $query = '(//div[@class="StoryShowBox"])';
+                } else {
+                    $query = '(//div[@class="StoryShowBox"])|(//div[@class="StoryShowBaseTextBox"])';
+                }
+
+                $new_content = "";
+                $entries = $xpath->query($query);
+                foreach ($entries as $entry) {
+                    $new_content = $new_content . $doc->saveHTML($entry);
                 }
 
                 if($new_content) {
@@ -55,8 +68,8 @@ class Af_GNOnline extends Plugin {
                 }
             }
 
-            if (strpos($html, "mtliche Inhalte auf dieser Seite ohne Einschr") !== FALSE) {
-                $article["content"] += "<p><strong>PAYWALL inc</strong></p>";
+            if ($paidContent) {
+                $article["content"] = "<p><strong>Dieser Artikel ben&ouml;tigt ein Abo.</strong></p>" . $article["content"];
             }
 
         }
