@@ -11,6 +11,7 @@ Some plugins for Tiny-Tiny-RSS
  * af_gnonline (german, http://www.gn-online.de/)
  * af_golem (german, http://www.golem.de/)
  * af_gulli (german, http://www.gulli.com/)
+ * af_handelsblatt (german, https://www.handelsblatt.com/)
  * af_heise (german, http://www.heise.de/)
  * af_hltv (english, http://www.hltv.org/)
  * af_nrz (german, http://www.nrz.de/)
