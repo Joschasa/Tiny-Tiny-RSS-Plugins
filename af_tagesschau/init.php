@@ -52,6 +52,12 @@ class Af_tagesschau extends Plugin {
                     $link->appendChild($linktext);
                 }
 
+                $move_src = $xpath->query('(//fieldset)');
+                $move_dst = $xpath->query('(//div[@class="mediaInfo"])');
+                if ($move_src.count() > 1 && $move_dst.count() > 1) {
+                    $move_dst->item(0)->appendChild($move_src->item(0));
+                }
+
                 $entries = $xpath->query('(//div[contains(@class, "sectionZ")])');
                 foreach ($entries as $entry) {
                     $new_content = $doc->saveHTML($entry);
