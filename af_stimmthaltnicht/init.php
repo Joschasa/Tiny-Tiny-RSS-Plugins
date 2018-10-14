@@ -29,23 +29,16 @@ class Af_StimmtHaltNicht extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-
-                // remove category stuff
-                /* $stuff = $xpath->query('(//div[@class="category_link"])'); */
-                /* foreach ($stuff as $removethis) { */
-                /*     $removethis->parentNode->removeChild($removethis); */
-                /* } */
-
-
                 $entries = $xpath->query('(//div[@class="entry-content"])');
-
                 foreach ($entries as $entry) {
-                    $basenode = $entry;
+                    $new_content = $doc->saveHTML($entry);
                     break;
                 }
 
-                if ($basenode) {
-                    $article["content"] = $doc->saveHTML($basenode);
+                if($new_content) {
+                    $new_content = preg_replace('/\s\s+/', ' ', $new_content);
+                    $article["content"] = $new_content;
+                    /* _debug(htmlspecialchars($new_content)); */
                 }
             }
         }

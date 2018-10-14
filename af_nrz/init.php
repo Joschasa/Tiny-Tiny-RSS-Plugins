@@ -27,15 +27,19 @@ class Af_nrz extends Plugin {
 
             if ($doc) {
                 $xpath = new DOMXPath($doc);
-/* (//div[@class="article__body"]/div[@class="article__header__intro"/p[@class="class="article__header__intro""])| */
+
                 $entries = $xpath->query('(//article/div/p)');
 
-                $basenode = "";
+                $new_content = "";
                 foreach ($entries as $entry) {
-                    $basenode = $basenode . $doc->saveHTML($entry);
+                    $new_content = $new_content . $doc->saveHTML($entry);
                 }
 
-                $article["content"] = $basenode;
+                if($new_content) {
+                    $new_content = preg_replace('/\s\s+/', ' ', $new_content);
+                    $article["content"] = $new_content;
+                    /* _debug(htmlspecialchars($new_content)); */
+                }
             }
         }
         return $article;

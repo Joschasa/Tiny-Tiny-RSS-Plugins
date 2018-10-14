@@ -19,6 +19,16 @@ class Af_spiegel extends Plugin {
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
     }
 
+    private function removeStuff($xpath, $filter) {
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     function hook_article_filter($article) {
         if (strpos($article["link"], "spiegel.de") !== FALSE) {
             $doc = new DOMDocument();
@@ -29,23 +39,18 @@ class Af_spiegel extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                // first remove header, footer
-                $stuff = $xpath->query('(//script)|(//noscript)|(//div[contains(@class, "content_ad_")])|(//div[@class="article-function-social-media"])|(//div[contains(@class, "article-function-box")])');
-
-                foreach ($stuff as $removethis) {
-                    $removethis->parentNode->removeChild($removethis);
-                }
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//div[contains(@class, "content_ad_")])|(//div[@class="article-function-social-media"])|(//div[contains(@class, "article-function-box")])');
 
                 $entries = $xpath->query('(//div[contains(@class, "article-section")])');
-
                 foreach ($entries as $entry) {
-
-                    $basenode = $entry;
+                    $new_content = $doc->saveHTML($entry);
                     break;
                 }
 
-                if ($basenode) {
-                    $article["content"] = $doc->saveHTML($basenode);
+                if($new_content) {
+                    $new_content = preg_replace('/\s\s+/', ' ', $new_content);
+                    $article["content"] = $new_content;
+                    /* _debug(htmlspecialchars($new_content)); */
                 }
             }
         }

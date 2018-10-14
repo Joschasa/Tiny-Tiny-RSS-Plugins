@@ -33,9 +33,7 @@ class Af_SSDebian extends Plugin {
                 $matches = array();
 
                 foreach ($entries as $entry) {
-
                     if (preg_match("/\/screenshots\/.*large\.png/i", $entry->getAttribute("href"))) {
-
                         $picture = $feed->createElement("img");
                         $picture->setAttribute("src", "http://screenshots.debian.net".$entry->getAttribute("href"));
                         $feed->appendChild($picture);

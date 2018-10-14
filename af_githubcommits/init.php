@@ -103,10 +103,7 @@ class Af_GithubCommits extends Plugin {
 
                 if ($node) {
                     $article["content"] = $doc->saveHTML($node);
-                    /* _debug('Article Content: '); */
-                    /* _debug('<pre>'); */
-                    /* _debug($article["content"]); */
-                    /* _debug('</pre>'); */
+                    /* _debug(htmlspecialchars($article["content"])); */
                 }
             }
         }

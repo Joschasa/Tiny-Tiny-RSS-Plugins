@@ -56,12 +56,12 @@ class Af_Golem extends Plugin {
             // now get the (cleaned) article
             $entries = $xpath->query('(//article)');
             foreach ($entries as $entry) {
-                $basenode = $entry;
+                $new_content = $doc->saveHTML($entry);
                 break;
             }
 
-            if ($basenode) {
-                return $doc->saveHTML($basenode) . $add_content;
+            if($new_content) {
+                return $new_content . $add_content;
             }
             else return false;
         }
@@ -70,7 +70,8 @@ class Af_Golem extends Plugin {
     function hook_article_filter($article) {
         if (strpos($article["guid"], "golem.de") !== FALSE) {
             if( ($content = $this->load_page($article["link"])) != FALSE) {
-                // _debug('<pre>'.$content.'</pre>');
+                $content = preg_replace('/\s\s+/', ' ', $content);
+                /* _debug(htmlspecialchars($content)); */
                 $article["content"] = $content;
             }
 

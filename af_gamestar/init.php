@@ -19,6 +19,16 @@ class Af_Gamestar extends Plugin {
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
     }
 
+    private function removeStuff($xpath, $filter) {
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     function hook_article_filter($article) {
         if (strpos($article["link"], "gamestar.de") !== FALSE) {
             $doc = new DOMDocument();
@@ -33,11 +43,7 @@ class Af_Gamestar extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $stuff = $xpath->query('(//script)|(//noscript)|(//div[@id="comments"])|(//p[contains(@class, "info")])|(//div[contains(@class, "teaser")])|(//div[@class="modal-body"])|(//p[@class="caption"])|(//ul[@class="taglist"])|(//div[@id="socialshare"])|(//div[@class="imagecontainer"])|(//h1)');
-                foreach ($stuff as $removethis) {
-                    $removethis->parentNode->removeChild($removethis);
-                }
-
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//div[@id="comments"])|(//p[contains(@class, "info")])|(//div[contains(@class, "teaser")])|(//div[@class="modal-body"])|(//p[@class="caption"])|(//ul[@class="taglist"])|(//div[@id="socialshare"])|(//div[@class="imagecontainer"])|(//h1)');
 
                 $entries = $xpath->query('(//div[contains(@class, "article")])');
                 foreach ($entries as $entry) {
@@ -49,7 +55,10 @@ class Af_Gamestar extends Plugin {
                 }
 
                 if ($basenode) {
-                    $article["content"] = $doc->saveHTML($basenode);
+                    $new_content = $doc->saveHTML($basenode);
+                    $new_content = preg_replace('/\s\s+/', ' ', $new_content);
+                    $article["content"] = $new_content;
+                    /* _debug(htmlspecialchars($new_content)); */
                 }
             }
         }

@@ -30,6 +30,16 @@ class Af_datenschutzbuero extends Plugin {
         return $feed_data;
     }
 
+    private function removeStuff($xpath, $filter) {
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     function hook_article_filter($article) {
         if (strpos($article["link"], "datenschutz.de") !== FALSE) {
             $doc = new DOMDocument();
@@ -41,23 +51,18 @@ class Af_datenschutzbuero extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                // first remove advertisement stuff
-                $stuff = $xpath->query('(//script)|(//noscript)|(//style)|(//hr[@noshade])|(//div[@align="center"])');
-
-                foreach ($stuff as $removethis) {
-                    $removethis->parentNode->removeChild($removethis);
-                }
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//style)|(//hr[@noshade])|(//div[@align="center"])');
 
                 $entries = $xpath->query('(//div[@id="content"])');
-
                 foreach ($entries as $entry) {
-
-                    $basenode = $entry;
+                    $new_content = $doc->saveHTML($entry);
                     break;
                 }
 
-                if ($basenode) {
-                    $article["content"] = $doc->saveHTML($basenode);
+                if($new_content) {
+                    $new_content = preg_replace('/\s\s+/', ' ', $new_content);
+                    $article["content"] = $new_content;
+                    /* _debug(htmlspecialchars($new_content)); */
                 }
             }
         }

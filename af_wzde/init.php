@@ -18,6 +18,16 @@ class Af_wzde extends Plugin {
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
     }
 
+    private function removeStuff($xpath, $filter) {
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     function hook_article_filter($article) {
         if (strpos($article["link"], "wz.de") !== FALSE) {
             $doc = new DOMDocument();
@@ -26,15 +36,23 @@ class Af_wzde extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                // Fetch Article Headline, Top Image, Article Paragraphs
-                $entries = $xpath->query('(//div[@id="wzMainColumn"]/div[contains(@class, "articleHeader")]/h1)|(//div[@id="wzMainColumn"]/div[contains(@class, "articleHeader")]/div[@class="articleTopImage"])|(//div[@id="wzMainColumn"]/div[contains(@class, "articleBody")]/p)');
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//style)|(//div[contains(@class, "comment")])|(//p[@class="caption"])');
 
-                $basenode = "";
+                // Fetch Article Headline, Top Image, Article Paragraphs
+                $entries = $xpath->query('(//div[contains(@class, "articleBody")]//p)|(//div[class="articleTopImage"])');
+
+                $new_content = "";
                 foreach ($entries as $entry) {
-                    $basenode = $basenode . $doc->saveHTML($entry);
+                    $line = $doc->saveHTML($entry);
+                    if (strpos($line, "nnte Sie auch interessieren") !== FALSE) {
+                        break;
+                    }
+                    $new_content = $new_content . $line;
                 }
 
-                $article["content"] = $basenode;
+                if ($new_content) {
+                    $article["content"] = $new_content;
+                }
             }
         }
         return $article;

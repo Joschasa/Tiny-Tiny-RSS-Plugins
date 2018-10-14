@@ -20,6 +20,16 @@ class Af_GithubNoAvatars extends Plugin {
         $host->add_hook($host::HOOK_FORMAT_ENCLOSURES, $this);
     }
 
+    private function removeStuff($xpath, $filter) {
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     public function hook_format_enclosures($rv, $result, $id, $always_display_enclosures, $article_content, $hide_images)
     {
         $newresult = array();
@@ -42,10 +52,7 @@ class Af_GithubNoAvatars extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $stuff = $xpath->query('//img');
-                foreach ($stuff as $removethis) {
-                    $removethis->parentNode->removeChild($removethis);
-                }
+                $this->removeStuff($xpath, '//img');
 
                 $node = $doc->getElementsByTagName('body')->item(0);
 

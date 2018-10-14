@@ -18,6 +18,16 @@ class Af_rponline extends Plugin {
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
     }
 
+    private function removeStuff($xpath, $filter) {
+        _debug("[RemoveStuff] Running filter " . $filter);
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     function hook_article_filter($article) {
         if (strpos($article["link"], "rp-online.de") !== FALSE) {
             $doc = new DOMDocument();
@@ -26,15 +36,20 @@ class Af_rponline extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                // Fetch Article Headline, Top Image, Article Paragraphs
-                $entries = $xpath->query('(//div[@class="first intro"])|(//div[contains(@class, "main-text")]/p)|(//div[contains(@class, "main-text")]/footer)');
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//style)');
 
-                $basenode = "";
+                // Fetch Article Headline, Top Image, Article Paragraphs
+                $entries = $xpath->query('(//p[contains(@class, "park-article__intro ")])|(//p[@class="text"])');
                 foreach ($entries as $entry) {
-                    $basenode = $basenode . $doc->saveHTML($entry);
+                    $new_content = $doc->saveHTML($entry);
+                    break;
                 }
 
-                $article["content"] = $basenode;
+                if($new_content) {
+                    $new_content = preg_replace('/\s\s+/', ' ', $new_content);
+                    $article["content"] = $new_content;
+                    /* _debug(htmlspecialchars($new_content)); */
+                }
             }
         }
         return $article;
