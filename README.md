@@ -27,7 +27,6 @@ Some plugins for Tiny-Tiny-RSS
  * af_thepit (german, http://www.the-pit.de/)
  * af_winfuture (german, http://winfuture.de/)
  * af_wissenslogs (german, http://www.scilogs.de/)
- * af_wzde (german, http://www.wz.de)
 * Other plugins
  * af_belauscht (german, http://www.belauscht.de/)
  * af_githubcommits (-, https://www.github.com/)
