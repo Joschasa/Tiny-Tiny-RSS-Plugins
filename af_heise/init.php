@@ -54,9 +54,6 @@ class Af_Heise extends Plugin {
 
                 //Remove unneeded stuff
                 $this->removeStuff($xpath, '(//script)|(//noscript)|(//a[@class="hinweis_anzeige"])|(//div[@class="shariff"])|(//p[@class="themenseiten"])|(//p[@class="permalink"])|(//p[@class="printversion"])|(//footer)|(//div[@class="adbottom"])|(//div[@class="rte__dossier"])|(//div[@class="publish-info"])|(//h2[@class="article__heading"])|(//p[@class="article-content__lead"])|(//div[@class="creator-info"])|(//div[@class="article-footer__content"])|(//section)');
-                foreach ($stuff as $removethis) {
-                    $removethis->parentNode->removeChild($removethis);
-                }
 
                 //c't and autos have their articles inside "section"-element
                 if(strrpos($link_complete_article, '/ct/') !== false || strrpos($link_complete_article, '/autos/') !== false) {
