@@ -4,7 +4,7 @@ class Af_Gamestar extends Plugin {
     private $host;
 
     function about() {
-        return array(1.3,
+        return array(1.4,
             "Fetch content of gamestar.de feed",
             "Joschasa");
     }
@@ -43,7 +43,10 @@ class Af_Gamestar extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $this->removeStuff($xpath, '(//script)|(//noscript)|(//div[@id="comments"])|(//p[contains(@class, "info")])|(//div[contains(@class, "teaser")])|(//div[@class="modal-body"])|(//p[@class="caption"])|(//ul[@class="taglist"])|(//div[@id="socialshare"])|(//div[@class="imagecontainer"])|(//h1)');
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//div[@id="comments"])|(//p[contains(@class, "info")])|'.
+                    '(//div[contains(@class, "teaser")])|(//div[@class="modal-body"])|(//p[@class="caption"])|(//ul[contains(@class, "taglist")])|'.
+                        '(//div[@id="socialshare"])|(//div[@class="imagecontainer"])|(//h1)|(//a[@class="hidden-md-up"])|'.
+                        '(//img[@height="1" or @width="1"])');
 
                 $entries = $xpath->query('(//div[contains(@class, "article")])');
                 foreach ($entries as $entry) {
