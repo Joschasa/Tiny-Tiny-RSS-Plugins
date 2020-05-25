@@ -51,7 +51,7 @@ class Af_Golem extends Plugin {
             }
 
             // Remove advertising and scripts
-            $this->removeStuff($xpath, '(//script)|(//noscript)|(//style)|(//ul[contains(@class, "social-tools")])|(//section[@id="job-market"])|(//div[@id="breadcrumbs"])|(//div[@class="tags"])|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//header[@class="cluster-header"]/h1)|(//div[@class="changelog_list"])');
+            $this->removeStuff($xpath, '(//script)|(//noscript)|(//figcaption)|(//style)|(//ul[contains(@class, "social-tools")])|(//section[@id="job-market"])|(//div[@id="breadcrumbs"])|(//div[@class="tags"])|(//div[contains(@id, "iqad") or contains(@class, "iqad")])|(//header[@class="cluster-header"]/h1)|(//div[@class="changelog_list"])');
 
             // now get the (cleaned) article
             $entries = $xpath->query('(//article)');
