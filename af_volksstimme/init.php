@@ -39,9 +39,7 @@ class Af_Volksstimme extends Plugin {
                 $entries = $xpath->query('(//div[@itemprop="image"]|//div[@itemprop="articleBody"])');
 
                 foreach ($entries as $entry) {
-                    _debug("Muh, found stuff...");
                     $basenode = $basenode . $doc->saveHTML($entry);
-                    _debug("Length of basenode: ".strlen($basenode));
                 }
 
                 if (!empty($basenode)) {

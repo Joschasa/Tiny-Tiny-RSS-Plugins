@@ -21,7 +21,7 @@ class ff_sinnfrei extends Plugin {
 
     function hook_feed_fetched($feed_data, $feed_url, $owner, $feed) {
         if (strpos($feed_url, "sinn-frei.com") !== FALSE) {
-            _debug("New plugin up and running!");
+            /* _debug("New plugin up and running!"); */
 
             $suchmuster = array();
             /* $suchmuster[0] = '/&uuml;/'; */

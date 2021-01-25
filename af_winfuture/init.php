@@ -20,7 +20,7 @@ class Af_WinFuture extends Plugin {
     }
 
     private function removeStuff($xpath, $filter) {
-        _debug("[RemoveStuff] Running filter " . $filter);
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
         $stuff = $xpath->query($filter);
         foreach ($stuff as $removethis) {
             /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
