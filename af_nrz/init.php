@@ -4,7 +4,7 @@ class Af_nrz extends Plugin {
     private $host;
 
     function about() {
-        return array(1.1,
+        return array(1.2,
             "Fetch content of NRZ feed",
             "Joschasa");
     }
@@ -18,6 +18,16 @@ class Af_nrz extends Plugin {
         $host->add_hook($host::HOOK_ARTICLE_FILTER, $this);
     }
 
+    private function removeStuff($xpath, $filter) {
+        /* _debug("[RemoveStuff] Running filter " . $filter); */
+        $stuff = $xpath->query($filter);
+        foreach ($stuff as $removethis) {
+            /* _debug("[RemoveStuff] Removing tag &lt;" . $removethis->tagName . "&gt;"); */
+            /* _debug(htmlspecialchars($removethis->C14N())); */
+            $removethis->parentNode->removeChild($removethis);
+        }
+    }
+
     function hook_article_filter($article) {
         if (strpos($article["link"], "nrz.de") !== FALSE) {
             $doc = new DOMDocument();
@@ -28,7 +38,9 @@ class Af_nrz extends Plugin {
             if ($doc) {
                 $xpath = new DOMXPath($doc);
 
-                $entries = $xpath->query('(//article/div/p)');
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//aside)');
+
+                $entries = $xpath->query('(//article)');
 
                 $new_content = "";
                 foreach ($entries as $entry) {
