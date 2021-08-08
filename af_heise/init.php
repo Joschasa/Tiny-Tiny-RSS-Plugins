@@ -59,9 +59,9 @@ class Af_Heise extends Plugin {
                 if(strrpos($link_complete_article, '/ct/') !== false || strrpos($link_complete_article, '/autos/') !== false) {
                     $entries = $xpath->query('(//section)');
                 }
-                //All other magazines, e.g. "news", list their articles inside an "article"-element
+                //All other magazines, e.g. "news", list their articles inside an "article-layout"-container
                 else {
-                    $entries = $xpath->query('(//article)');
+                    $entries = $xpath->query('(//div[@class="article-layout__content article-content"])');
                 }
 
                 foreach ($entries as $entry) {
