@@ -36,8 +36,12 @@ class Af_Heise extends Plugin {
             $link_orig = $article["link"]; //e.g.: "https://www.heise.de/newsticker/meldung/Waehrung-oder-Spekulationsobjekt-das-Bitcoin-Dilemma-Zahlen-oder-Zocken-3926657.html?wt_mc=rss.ho.beitrag.atom";
             $link_complete_article = substr($link_orig, 0, strrpos($link_orig, '?'));
 
+            //Do not mangle techstage link
+            if(strpos($article["link"], "techstage.de") !== FALSE) {
+                $link = $link_complete_article;
+            }
             //Not all article-links end with a ".html", so we have to append it in that case.
-            if(strrpos($link_complete_article, '.html') !== false) {
+            elseif(strrpos($link_complete_article, '.html') !== false) {
                 $link = $link_complete_article.'?seite=all';
             }
             else {
@@ -53,20 +57,23 @@ class Af_Heise extends Plugin {
                 $xpath = new DOMXPath($doc);
 
                 //Remove unneeded stuff
-                $this->removeStuff($xpath, '(//script)|(//noscript)|(//a[@class="hinweis_anzeige"])|(//div[@class="shariff"])|(//p[@class="themenseiten"])|(//p[@class="permalink"])|(//p[@class="printversion"])|(//footer)|(//div[@class="adbottom"])|(//div[@class="rte__dossier"])|(//div[@class="publish-info"])|(//h2[@class="article__heading"])|(//p[@class="article-content__lead"])|(//div[@class="creator-info"])|(//div[@class="article-footer__content"])|(//section)');
+                $this->removeStuff($xpath, '(//script)|(//noscript)|(//a[@class="hinweis_anzeige"])|(//div[@class="shariff"])|(//p[@class="themenseiten"])|(//p[@class="permalink"])|(//p[@class="printversion"])|(//footer)|(//div[@class="adbottom"])|(//div[@class="rte__dossier"])|(//div[@class="publish-info"])|(//h2[@class="article__heading"])|(//div[@class="creator-info"])|(//div[@class="article-footer__content"])|(//aside)');
 
                 //c't and autos have their articles inside "section"-element
                 if(strrpos($link_complete_article, '/ct/') !== false || strrpos($link_complete_article, '/autos/') !== false) {
                     $entries = $xpath->query('(//section)');
                 }
-                //All other magazines, e.g. "news", list their articles inside an "article"-element
+                //techstage uses "article-content ", and I like the lead-in
+                elseif(strrpos($link_complete_article, 'techstage') !== false) {
+                    $entries = $xpath->query('(//div[@class="article-perex "])|(//div[@class="article-content "])');
+                }
+                //All other magazines, e.g. "news", list their articles inside an "article-layout"-container
                 else {
-                    $entries = $xpath->query('(//article)');
+                    $entries = $xpath->query('(//div[@class="article-layout__content article-content"])');
                 }
 
                 foreach ($entries as $entry) {
-                    $new_content = $doc->saveHTML($entry);
-                    break;
+                    $new_content .= $doc->saveHTML($entry);
                 }
 
                 if ($new_content) {
